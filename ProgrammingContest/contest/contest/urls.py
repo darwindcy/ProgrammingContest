@@ -21,6 +21,8 @@ from users.views import random_view
 urlpatterns = [
     path('users/', include('users.urls')),
 
+    path('contests/', include('contests.urls')),
+
     path('users/random/', random_view),
 
     path('admin/', admin.site.urls),
