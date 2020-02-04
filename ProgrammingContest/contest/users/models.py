@@ -16,6 +16,7 @@ class User(models.Model):
                                     choices = user_choices , 
                                     default = 'participant')
     password    = models.CharField(max_length=30)
+    participatingIn  = models.ManyToManyField('contests.Contest', blank = True)
     contestIn   = models.BooleanField
 
     def get_absolute_url(self):

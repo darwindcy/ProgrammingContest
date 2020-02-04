@@ -19,5 +19,6 @@ class UserModelForm(forms.ModelForm):
             'userName',
             'userType',
             'password',
+            'participatingIn',
         ]
         # add validation by def clean_title ... example
