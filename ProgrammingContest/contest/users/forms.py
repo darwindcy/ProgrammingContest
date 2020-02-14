@@ -13,6 +13,9 @@ class UserModelForm(forms.ModelForm):
     userType = forms.ChoiceField(label = "User Type", choices = user_choices, required = True)
     password = forms.CharField(label = "Password")
     
+    from contests.models import Contest
+    participatingIn = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple, queryset = Contest.objects.all())
+
     class Meta:
         model = User
         fields = [

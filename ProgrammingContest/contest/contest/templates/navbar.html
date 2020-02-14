@@ -4,6 +4,10 @@
             <li>HomePage</li>
             <li>Somewhere</li>
             <li>Somewhere</li>
+            <a href="{% url 'login:login-page' %}"> login </a> </br>
+            <a href="{% url 'contests:contest-list' %}"> contests </a> </br>
+            <a href="{% url 'users:user-list' %}"> users </a> </br>
+            <a href="{% url 'login:logout-page' %}"> Logout </a> </br>
         </ul>
     </div>
 </nav>

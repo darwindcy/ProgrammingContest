@@ -19,6 +19,9 @@ from django.urls import include, path
 from users.views import random_view
 
 urlpatterns = [
+
+    path('login/', include('login.urls')),
+
     path('users/', include('users.urls')),
 
     path('contests/', include('contests.urls')),
