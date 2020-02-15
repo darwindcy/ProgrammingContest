@@ -15,7 +15,7 @@ class ContestModelForm(forms.ModelForm):
      #                   widget = forms.CheckboxSelectMultiple,
       #                  choices = Contest.contestants.all())
     contestants = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
-        queryset = User.objects.all())
+        queryset = User.objects.all(), required = False)
     class Meta:
         model = Contest
         fields = [
