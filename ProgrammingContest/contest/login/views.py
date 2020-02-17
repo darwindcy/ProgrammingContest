@@ -18,6 +18,9 @@ from contests.models import Contest
 class SampleView(TemplateView):
     template_name = "login/sample.html"
 
+class UnloggedPageView(TemplateView):
+    template_name = "login/unlogged_page.html"
+
 class LoginPageView(FormView):
     template_name = "login/login_page2.html"
     success_url = '/contests'

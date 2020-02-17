@@ -43,9 +43,12 @@ INSTALLED_APPS = [
     'users',
     'contests',
     'login',
+    'oracle',
 ]
 
 AUTH_USER_MODEL = 'users.customUser'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

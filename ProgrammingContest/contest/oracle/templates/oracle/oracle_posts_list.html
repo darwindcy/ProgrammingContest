@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for instance in object_list %}
+
+<p>
+    Posted By: 
+    {% if object.postUser != None and object.postUser != " " %}
+        {{ object.postUser }}
+    {% else %}
+        User Name not available
+    {% endif %}
+    
+    <br>
+    Post Question: {{ instance.postQuestion }}
+    
+    <a href = '{{ instance.get_absolute_url }}'> <br> Detail </a>
+
+    {% if instance.postAnswer != None and instance.postAnswer != "" %}
+            {{ instance.postAnswer }}
+        {% else %}
+            <br>
+            Not Answered
+        {% endif %}
+    </a>
+    
+</p>
+
+{% endfor %}
+
+{% endblock %}

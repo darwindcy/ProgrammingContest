@@ -18,7 +18,10 @@ from django.urls import include, path
 
 from users.views import random_view
 
+from django.contrib.auth.decorators import login_required
+
 urlpatterns = [
+    path('oracle/', include('oracle.urls')),
 
     path('login/', include('login.urls')),
 
