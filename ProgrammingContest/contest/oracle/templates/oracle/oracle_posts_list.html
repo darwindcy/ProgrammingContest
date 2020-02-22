@@ -5,25 +5,30 @@
 {% for instance in object_list %}
 
 <p>
-    Posted By: 
-    {% if object.postUser != None and object.postUser != " " %}
-        {{ object.postUser }}
+    Posted By: <br>
+    {% if instance.postUser.userName != None and instance.postUser.userName != " " %}
+        {{ instance.postUser }}
     {% else %}
         User Name not available
     {% endif %}
     
     <br>
     Post Question: {{ instance.postQuestion }}
-    
-    <a href = '{{ instance.get_absolute_url }}'> <br> Detail </a>
+    <br>
 
+    
     {% if instance.postAnswer != None and instance.postAnswer != "" %}
-            {{ instance.postAnswer }}
-        {% else %}
-            <br>
-            Not Answered
-        {% endif %}
-    </a>
+        Answered By: {{ instance.postAnswerer }} <br>
+        Answer: {{ instance.postAnswer }}
+    {% else %}
+        Not Answered
+    {% endif %}
+    <br>
+    <a href = '{{ instance.get_absolute_url }}'> Detail </a>
+    &nbsp; &nbsp;
+    <a href = '{{ instance.get_absolute_url }}answer/'> Answer </a>
+    &nbsp; &nbsp;
+    <a href = '{{ instance.get_absolute_url }}delete/'> Delete </a>
     
 </p>
 

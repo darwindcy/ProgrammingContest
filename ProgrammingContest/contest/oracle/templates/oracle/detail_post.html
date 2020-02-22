@@ -2,15 +2,23 @@
 
 {% block content %}
 
-<h1>Contest Detail</h1>
 
-<h2>{{ object.postQuestion }}</h2>
+<h1>Post Detail</h1>
 
 <p>
     {% if object.postUser != None and object.postUser != " " %}
-        {{ object.postUser }}
+        Posted By: {{ object.postUser }}
     {% else %}
         <p>User Name not available</p>
+    {% endif %}
+
+    <h2>{{ object.postQuestion }}</h2>
+
+    {% if object.postAnswer != None and object.postAnswer != "" %}
+        Post Answer: {{ object.postAnswer }} <br>
+        Answered By: {{ object.postAnswerer }}
+    {% else %}
+        Post Not answered yet
     {% endif %}
 
 </p>

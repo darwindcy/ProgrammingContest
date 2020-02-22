@@ -11,9 +11,9 @@ from django.views.generic import(
 )
 # Create your views here.
 
-from .forms import UserModelForm
+from .forms import UserModelForm, UserAdminCreationForm, UserAdminUpdateForm
 
-from .models import User
+from .models import customUser
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -24,20 +24,20 @@ class UserListView(ListView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
-    queryset = User.objects.all()
+    queryset = customUser.objects.all()
 
 class UserDetailView(DetailView):
     template_name = 'users/user_detail.html'
-    queryset = User.objects.all()
+    queryset = customUser.objects.all()
 
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(User, id = id_)
+        return get_object_or_404(customUser, id = id_)
 
 class UserCreateView(CreateView):
     template_name = "users/user_create.html"
-    form_class = UserModelForm
-    queryset = User.objects.all()
+    form_class = UserAdminUpdateForm
+    queryset = customUser.objects.all()
 
     def form_valid(self, form):
         print(form.cleaned_data)
@@ -46,11 +46,11 @@ class UserCreateView(CreateView):
 class UserUpdateView(UpdateView):
     template_name = "users/user_create.html"
     form_class = UserModelForm
-    queryset = User.objects.all()
+    queryset = customUser.objects.all()
 
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(User, id = id_)
+        return get_object_or_404(customUser, id = id_)
 
     def form_valid(self, form):
         print(form.cleaned_data)
@@ -62,7 +62,7 @@ class UserDeleteView(DeleteView):
 
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(User, id = id_)
+        return get_object_or_404(customUser, id = id_)
     
     def get_success_url(self):
         return reverse('users:user-list')

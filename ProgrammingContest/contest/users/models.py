@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 user_choices  = (
     ('administrator', 'ADMINISTRATOR'),
-    ('participant', 'PARTICIPANT'),
+    ('team', 'Team'),
     ('grader', 'GRADER'),
 )
 
@@ -32,6 +32,16 @@ class MyAccountManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
+    def create_staffuser(self, userName, userType, password):
+        user = self.create_user(
+            userName = userName,
+            userType = userType,
+            password = password
+        )
+        user.staff = True
+        user.save(using = self._db)
+        return user
+
     def create_superuser(self, userName, userType, password):
         user = self.create_user(
             userName = userName,
@@ -49,16 +59,14 @@ class customUser(AbstractBaseUser):
     userType        = models.CharField(max_length=20, 
                                     choices = user_choices , 
                                     default = 'participant')
-    password         = models.CharField(max_length=30)
     participatingIn  = models.ManyToManyField('contests.Contest', blank = True)
-    contestIn   = models.BooleanField
 
-    email           = models.EmailField()
+
     date_joined     = models.DateTimeField(blank = True, null = True)
     last_login      = models.DateTimeField(blank = True, null = True)
-    is_admin        = models.BooleanField(default = False)
-    is_active       = models.BooleanField(default = True)
-    is_staff        = models.BooleanField(default = False)
+    admin        = models.BooleanField(default = False)
+    active       = models.BooleanField(default = True)
+    staff        = models.BooleanField(default = False)
     is_superuser    = models.BooleanField(default = False)
 
 
@@ -66,6 +74,9 @@ class customUser(AbstractBaseUser):
     REQUIRED_FIELDS = ['userType', 'password']
 
     objects = MyAccountManager()
+
+    def get_full_name(self):
+        return self.userName
 
     def __str__(self):
         return self.userName + ", " + self.userType
@@ -76,18 +87,5 @@ class customUser(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
     
-
-    def get_absolute_url(self):
-        return reverse("users:user-detail", kwargs = {"id": self.id})
-
-class User(models.Model):
-    userName    = models.CharField(max_length=20) #max_length = 20
-    userType    = models.CharField(max_length=20, 
-                                    choices = user_choices , 
-                                    default = 'participant')
-    password    = models.CharField(max_length=30)
-    participatingIn  = models.ManyToManyField('contests.Contest', blank = True)
-    contestIn   = models.BooleanField
-
     def get_absolute_url(self):
         return reverse("users:user-detail", kwargs = {"id": self.id})

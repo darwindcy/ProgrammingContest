@@ -2,7 +2,7 @@ from django import forms
 
 from .models import Contest
 
-from users.models import User
+from users.models import customUser
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -15,7 +15,7 @@ class ContestModelForm(forms.ModelForm):
      #                   widget = forms.CheckboxSelectMultiple,
       #                  choices = Contest.contestants.all())
     contestants = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
-        queryset = User.objects.all(), required = False)
+        queryset = customUser.objects.all(), required = False)
     class Meta:
         model = Contest
         fields = [

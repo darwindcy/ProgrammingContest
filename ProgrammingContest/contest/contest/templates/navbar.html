@@ -3,7 +3,12 @@
         <ul>
             <div>
                 <p>
-                    Current User: {{ request.user.userName }}
+                    {% if request.user.userName != None and request.user.userName != "" %}
+                        Current User: {{ request.user.userName }}
+                    {% else %}
+                        Current User: No User Logged In
+                    {% endif %}
+                    <!-- Current User: {{ request.user.userName }} -->
                 </p>
             </div>
 

@@ -34,7 +34,6 @@ class ContestDetailView(DetailView):
         return get_object_or_404(Contest, id = id_)
 
 
-
 class ContestDeleteView(DeleteView):
     template_name = 'contests/contest_delete.html'
     #queryset = User.objects.all()
