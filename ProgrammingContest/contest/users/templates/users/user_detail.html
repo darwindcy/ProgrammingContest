@@ -7,4 +7,12 @@
 <p>{{ object.userType }}</p>
 <p> {{ object.password }} </p>
 
+<p>
+    <b>Contest Affiliations: </b> <br>
+    {{ object.participatingIn.count }} <br>
+    {% for instance in object.participatingIn.all %}
+        {{ instance }} <br>
+    {% endfor %}
+</p>
+
 {% endblock %}

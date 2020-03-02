@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-# Create your models here.
+from contests.models import Contest
 
 user_choices  = (
     ('administrator', 'ADMINISTRATOR'),
@@ -16,16 +16,19 @@ user_choices  = (
 
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, userName, userType, password=None):
+    def create_user(self, userName, userType, password=None, participatingIn = None):
         if not userName:
             raise ValueError("Users must have a username")
 
         if not userType:
             raise ValueError("Users must have a user type")
+
+        if not password:
+            raise ValueError("Users must have a password")
         
         user = self.model(
             userName = userName,
-            userType = userType
+            userType = userType,
         )
 
         user.set_password(password)
@@ -54,13 +57,12 @@ class MyAccountManager(BaseUserManager):
         user.save(using = self._db)
         return user
 
-class customUser(AbstractBaseUser):
+class CustomUser(AbstractBaseUser):
     userName        = models.CharField(max_length = 30, unique = True)
     userType        = models.CharField(max_length=20, 
-                                    choices = user_choices , 
-                                    default = 'participant')
-    participatingIn  = models.ManyToManyField('contests.Contest', blank = True)
-
+                                    choices = user_choices, 
+                                    default = user_choices[1])
+    participatingIn  = models.ManyToManyField(Contest, blank = True)
 
     date_joined     = models.DateTimeField(blank = True, null = True)
     last_login      = models.DateTimeField(blank = True, null = True)

@@ -2,7 +2,7 @@ from django.db import models
 
 from django.urls import reverse
 
-from users.models import customUser
+from users.models import CustomUser
 
 from django.conf import settings
 # Create your models here.

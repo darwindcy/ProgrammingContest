@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'contests',
     'login',
     'oracle',
+    'home',
+    'account',
 ]
 
-AUTH_USER_MODEL = 'users.customUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/login/'
 

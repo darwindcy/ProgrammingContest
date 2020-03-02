@@ -8,6 +8,8 @@
     {{ instance.id }} - <a href = '{{instance.get_absolute_url }}' > 
         {{ instance.userName}}
     </a>
+    &nbsp; <a href = '{{instance.get_absolute_url }}update' > update </a>
+    &nbsp; <a href = '{{instance.get_absolute_url }}delete' > delete </a>
 </p>
 
 {% endfor %}

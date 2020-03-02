@@ -2,9 +2,13 @@
 
 {% block content %}
 
+<font size = 4>
+<a href = '{{ instance.get_absolute_url }}create/'> Create New Post</a>
+<br><br>
+<table border = 5 cellpadding = 5 cellspacing = 4>
 {% for instance in object_list %}
-
-<p>
+<tr>
+    <td>
     Posted By: <br>
     {% if instance.postUser.userName != None and instance.postUser.userName != " " %}
         {{ instance.postUser }}
@@ -15,8 +19,7 @@
     <br>
     Post Question: {{ instance.postQuestion }}
     <br>
-
-    
+    <br>
     {% if instance.postAnswer != None and instance.postAnswer != "" %}
         Answered By: {{ instance.postAnswerer }} <br>
         Answer: {{ instance.postAnswer }}
@@ -26,12 +29,15 @@
     <br>
     <a href = '{{ instance.get_absolute_url }}'> Detail </a>
     &nbsp; &nbsp;
+    {% if request.user.userType == "administrator" %}
     <a href = '{{ instance.get_absolute_url }}answer/'> Answer </a>
     &nbsp; &nbsp;
     <a href = '{{ instance.get_absolute_url }}delete/'> Delete </a>
-    
+    {% endif %}
 </p>
-
+</td>
+</tr>
 {% endfor %}
-
+</table>
+</font> 
 {% endblock %}

@@ -60,6 +60,7 @@ class PostAnswerView(UpdateView):
 
     def form_valid(self, form):
         form.instance.postAnswerer = self.request.user
+        form.instance.isAnswered = True
         print(form.cleaned_data)
         return super().form_valid(form)
 

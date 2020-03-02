@@ -16,10 +16,9 @@ class OracleUpdateForm(forms.ModelForm):
     postQuestion        = forms.CharField(label = "Question", disabled = True)
     postAnswer          = forms.CharField(label = "Answer", widget = forms.Textarea, max_length = 500)
     #postAnswerer        = forms.CharField(label = "Answered By", disabled = True)
-    isAnswered          = None
 
     class Meta:
         model = OraclePost
         fields = [
-            'postQuestion', 'postAnswer', 'isAnswered',
+            'postQuestion', 'postAnswer',
         ]

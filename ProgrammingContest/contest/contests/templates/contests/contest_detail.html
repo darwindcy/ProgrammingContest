@@ -8,4 +8,19 @@
 <p>{{ object.contestDate }}</p>
 <p>{{ object.contestParticipants }}</p>
 
+    Contest Time: {{ object.contestHours }} Hours
+
+    {% if object.contestMinutes != 0 and object.contestHours != " " %}
+        and {{ object.contestMinutes }} minutes
+    {% endif %}
+    <p>
+        <b>Current Teams: </b> <br>
+        {% for instance in object.contestants.all %}
+            {{ instance }} <br>
+        {% endfor %}
+    </p>
+
+    <p>
+        Contest Duration {{ object.contestDuration }}
+    </p>
 {% endblock %}

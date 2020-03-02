@@ -8,6 +8,9 @@
     {{ instance.id }} - <a href = '{{instance.get_absolute_url }}' > 
         {{ instance.contestName }}
     </a>
+
+    &nbsp; <a href = '{{instance.get_absolute_url }}delete' > delete </a>
+    &nbsp; <a href = '{{instance.get_absolute_url }}update' > update </a>
 </p>
 
 {% endfor %}

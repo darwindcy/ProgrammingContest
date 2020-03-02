@@ -23,7 +23,7 @@ class UnloggedPageView(TemplateView):
 
 class LoginPageView(FormView):
     template_name = "login/login_page2.html"
-    success_url = '/contests'
+    success_url = '/account'
     form_class = AuthenticationForm
 
     redirect_field_name = REDIRECT_FIELD_NAME
@@ -50,7 +50,12 @@ class LoginPageView(FormView):
     def get_success_url(self):
         redirect_to = self.request.GET.get(self.redirect_field_name)
         
-        redirect_to = self.success_url
+        if self.request.user.userType.lower() == "administrator":
+            redirect_to = '/account/admin/'
+        elif self.request.user.userType.lower() == "grader":
+            redirect_to = '/account/grader/'
+        else:
+            redirect_to = '/account/team/'
         
         return redirect_to
 

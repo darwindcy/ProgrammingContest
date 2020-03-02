@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>This is the team account page</h1>
+
+<h3>You are in the following contests:</h3>
+
+{% for instance in object_list %}
+    {{ instance.contestName }} <br>
+{% endfor %}
+
+<font size = 6>
+    <table border = 5 cellpadding = 5 align = center font = 20>
+        <tr><th>Team Links</th></tr>
+        <tr><td> <a href="{% url 'oracle:posts-list' %}"> Oracle </a></td></tr>
+    </table>
+</font>
+
+{% endblock %}
