@@ -10,9 +10,9 @@ from django.views.generic import(
     DeleteView
 )
 
-from .forms import ContestModelForm, ContestUpdateForm
+from .forms import ContestModelForm, ContestUpdateForm, ProblemCreateForm
 
-from .models import Contest
+from .models import Contest, Problem
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -26,6 +26,30 @@ class ContestListView(ListView):
         return super().dispatch(*args, **kwargs)
     queryset = Contest.objects.all()
 
+class ContestStartView(DetailView):
+    queryset = Contest.objects.all()
+    #fields = ['isRunning']
+    template_name = "contests/contest_detail.html"
+
+    def get_object(self):
+        id_ = self.kwargs.get("id")
+        Contest.objects.filter(id = id_).update(isRunning = True)
+        return get_object_or_404(Contest, id = id_)      
+    
+    # def form_valid(self, form):
+    #     print(form.cleaned_data)
+    #     form.instance.isRunning = True
+    #     return super().form_valid(form)
+
+class ContestStopView(DetailView):
+    queryset = Contest.objects.all()
+    template_name = "contests/contest_detail.html"
+
+    def get_object(self):
+        id_ = self.kwargs.get("id")
+        Contest.objects.filter(id = id_).update(isRunning = False)
+        return ContestDetailView
+
 class ContestDetailView(DetailView):
     template_name = 'contests/contest_detail.html'
     queryset = Contest.objects.all()
@@ -34,6 +58,13 @@ class ContestDetailView(DetailView):
         id_ = self.kwargs.get("id")
         return get_object_or_404(Contest, id = id_)
 
+class ContestDetailTeamView(DetailView):
+    template_name = 'contests/contest_team_detail.html'
+    queryset      = Contest.objects.all()
+
+    def get_object(self):
+        id_ = self.kwargs.get("id")
+        return get_object_or_404(Contest, id = id_)
 
 class ContestDeleteView(DeleteView):
     template_name = 'contests/contest_delete.html'
@@ -46,7 +77,18 @@ class ContestDeleteView(DeleteView):
     def get_success_url(self):
         return reverse('contests:contest-list')
 
+class ProblemCreateView(CreateView):
+    model = Problem
+    template_name  = "contests/problem_create.html"
+    form_class = ProblemCreateForm
+    queryset = Problem.objects.all()
 
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('contests:contest-list')
 
 class ContestCreateView(CreateView):
     model = Contest

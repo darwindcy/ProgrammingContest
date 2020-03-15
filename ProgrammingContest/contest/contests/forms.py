@@ -1,11 +1,27 @@
 from django import forms
 
-from .models import Contest
+from .models import Contest, Problem
 
 from users.models import CustomUser
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+
+class ProblemCreateForm(forms.ModelForm):
+    contest             = forms.ModelChoiceField(queryset = Contest.objects.all())
+    problemName         = forms.CharField(label = "Problem Name")
+    problemInformation  = forms.CharField(label = "Problem Information", widget = forms.Textarea)
+    problemTests        = forms.CharField(label = "ProblemTests", widget = forms.Textarea)
+    
+    class Meta:
+        model = Problem
+        fields = [
+            'contest',
+            'problemName',
+            'problemInformation',
+            'problemTests',
+        ]
+
 
 class ContestUpdateForm(forms.ModelForm):
     contestName         = forms.CharField(label = "Contest Name")
@@ -15,7 +31,7 @@ class ContestUpdateForm(forms.ModelForm):
 
     contestHours        = forms.IntegerField(label = "Hours", min_value = 0, required = True)
     contestMinutes      = forms.IntegerField(label = "Minutes", min_value = 0, required = True)
-
+    #contestQuestions    = forms.ModelChoiceField(queryset = Problem.objects.all(), required = False)
     class Meta:
         model = Contest
         fields = [
@@ -25,7 +41,7 @@ class ContestUpdateForm(forms.ModelForm):
             'contestHours',
             'contestMinutes',
         ]
-        labels = {'contestHours: Contest Hours', 'contestMinutes : Contest Minutes'}
+        labels = {'contestHours: Contest Hours', 'contestMinutes : Contest Minutes', 'contestQuestions : Problems'}
 
 class ContestModelForm(forms.ModelForm):
     contestName         = forms.CharField(label = "Contest Name")
@@ -38,6 +54,8 @@ class ContestModelForm(forms.ModelForm):
 
     contestHours        = forms.IntegerField(label = "Hours", min_value = 0, required = True)
     contestMinutes      = forms.IntegerField(label = "Minutes", min_value = 0, required = True)
+
+    #contestQuestions    = forms.MultipleChoiceField(label = "Problems List", required = False)
 
     def clean(self, *args, **kwargs):
         #forms.raiseValidationError("Please Enter a Valid Time")
@@ -59,7 +77,7 @@ class ContestModelForm(forms.ModelForm):
             'contestDate',
             'contestants', 
             'contestHours',
-            'contestMinutes'
+            'contestMinutes',
         ]
-        labels = {'contestHours: Contest Hours', 'contestMinutes : Contest Minutes'}
+        labels = {'contestHours: Contest Hours', 'contestMinutes : Contest Minutes', 'contestQuestions : Problems List'}
         # add validation by def clean_title ... example

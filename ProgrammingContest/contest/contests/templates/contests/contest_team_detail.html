@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Contest Detail</h1>
+
+<h2>{{ object.contestName }}</h2>
+<p>{{ object.contestDate }}</p>
+
+    <p>
+        Contest Duration {{ object.contestDuration }}
+    </p>
+    <font size = 5>
+    <table border = 3>
+    <th> Problem Set </th>
+
+    {% for instance in object.contestproblems.all %}
+    <tr>
+        <td>
+        <b>Problem Name: </b> <br><br> {{ instance.problemName }} <br><br>
+        <b>Problem Information: </b><br><br>{{ instance.problemInformation }} <br><br>
+        <b>Sample Run:</b><br><br>{{ instance.problemTests }}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    </font>
+{% endblock %}

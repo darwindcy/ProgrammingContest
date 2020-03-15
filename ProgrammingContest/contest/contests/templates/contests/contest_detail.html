@@ -3,6 +3,9 @@
 {% block content %}
 
 <h1>Contest Detail</h1>
+<font size = 5>
+{% if request.user.userType == "administrator" %}
+<a href = '{{instance.get_absolute_url }}update' > Update </a>
 
 <h2>{{ object.contestName }}</h2>
 <p>{{ object.contestDate }}</p>
@@ -19,8 +22,30 @@
             {{ instance }} <br>
         {% endfor %}
     </p>
-
-    <p>
-        Contest Duration {{ object.contestDuration }}
+{% endif %}
+    <p><b>
+        Contest Duration: {{ object.contestDuration }} <br>
+        Contest Status:
+        {% if object.isRunning == True %}
+            Contest Active
+        {% else %}
+            Contest Closed
+        {% endif %}
+        </b>
     </p>
+    
+    <table border = 3>
+    <th> Problem Set </th>
+
+    {% for instance in object.contestproblems.all %}
+    <tr>
+        <td>
+        <b>Problem Name: </b> <br><br> {{ instance.problemName }} <br><br>
+        <b>Problem Information: </b><br><br>{{ instance.problemInformation }} <br><br>
+        <b>Sample Run:</b><br><br>{{ instance.problemTests }}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    </font>
 {% endblock %}

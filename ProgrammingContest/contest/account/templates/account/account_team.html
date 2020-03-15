@@ -2,12 +2,14 @@
 
 {% block content %}
 
-<h1>This is the team account page</h1>
+<h1 align="center">This is the team account page</h1>
 
 <h3>You are in the following contests:</h3>
 
 {% for instance in object_list %}
-    {{ instance.contestName }} <br>
+<a href = '{{ instance.get_absolute_url }}' > 
+    {{ instance.contestName }}
+</a> <br>
 {% endfor %}
 
 <font size = 6>

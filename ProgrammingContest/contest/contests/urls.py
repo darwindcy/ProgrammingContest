@@ -8,6 +8,10 @@ from .views import (
     ContestDeleteView,
     ContestCreateView,
     ContestUpdateView,
+    ContestDetailTeamView,
+    ProblemCreateView,
+    ContestStartView,
+    ContestStopView
 )
 
 app_name = 'contests'
@@ -18,4 +22,7 @@ urlpatterns = [
     path('<int:id>/delete/', login_required(ContestDeleteView.as_view()), name = 'contest-delete'),
     path('create/', login_required(ContestCreateView.as_view()), name = 'contest-create'),
     path('<int:id>/update/', login_required(ContestUpdateView.as_view()), name = 'contest-update'),
+    path('problems/create/', ProblemCreateView.as_view(), name = 'problem-create'),
+    path('<int:id>/start/', ContestStartView.as_view(), name = 'contest-start'),
+    path('<int:id>/stop/', ContestStopView.as_view(), name = 'contest-stop')
 ]
