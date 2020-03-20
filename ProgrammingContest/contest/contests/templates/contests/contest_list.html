@@ -2,20 +2,21 @@
 
 {% block content %}
 <font size = 4>
-    <a href = '{{ instance.get_absolute_url }}create/'> Create New Contest</a>
+    <a href = '{{ get_absolute_url }}create/'> Create New Contest</a>
     <br><br>
     <table border = 5 cellpadding = 5 cellspacing = 4>
-{% for instance in object_list %}
-<tr>
-<td>
-    <a href = '{{ instance.get_absolute_url }}' > 
-        {{ instance.contestName }}
-    </a>
+        {% for instance in object_list %}
+        <tr>
+        <td>
+            <a href = '{{ instance.get_absolute_url }}' > 
+                {{ instance.contestName }}
+            </a>
  
-    &nbsp; <a href = '{{ instance.get_absolute_url }}start' > start </a>
-    &nbsp; <a href = '{{ instance.get_absolute_url }}stop' > stop </a>
-    &nbsp; <a href = '{{ instance.get_absolute_url }}update' > update </a>
-    &nbsp; <a href = '{{ instance.get_absolute_url }}delete' > delete </a>
+        &nbsp; <a href = '{{ instance.get_absolute_url }}start' > start </a>
+        &nbsp; <a href = '{{ instance.get_absolute_url }}stop' > stop </a>
+        &nbsp; <a href = '{{ instance.get_absolute_url }}update' > update </a>
+        &nbsp; <a href = '{{ instance.get_absolute_url }}delete' > delete </a>
+        &nbsp; <a href = '{{ instance.get_absolute_url }}submissions' > submissions </a>
 
     <!-- <form action = "." method = 'POST'> {% csrf_token %}
         <input type = "submit" value = "Start"> 

@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # new apps
 
     'users',
@@ -46,11 +45,17 @@ INSTALLED_APPS = [
     'oracle',
     'home',
     'account',
+    'submission',
+    'scoreboard',
 ]
 
-AUTH_USER_MODEL = 'users.CustomUser'
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/login/'
+AUTH_USER_MODEL     = 'users.CustomUser'
+LOGIN_URL           = '/login/'
+LOGIN_REDIRECT_URL  = '/login/'
+
+MEDIA_ROOT          = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL           = '/media/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

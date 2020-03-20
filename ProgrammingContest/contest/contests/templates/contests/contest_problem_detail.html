@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Problem Detail</h1>
+<font size = 5>
+    <table border = 3>
+    <tr>
+        <td>
+        <b>Problem Name: </b> <br><br> {{ object.problemName }} <br><br>
+        <b>Problem Information: </b><br><br>{{ object.problemInformation }} <br><br>
+        <b>Sample Run:</b><br><br>{{ object.problemTests }}
+        </td>
+        
+        {% if object.associatedProblem.problemName %}
+            not empty
+        {% else %}
+            empty
+        {% endif %}
+
+        {% for ins in object.submission_set.all %}
+            {{ ins.submissionName }}
+        {% endfor %}
+        
+
+        <td>
+            <b><a href = "{{ request.path }}submit">Submit</a></b><br><br> 
+        </td>
+
+        <td>
+            <b><a href = "{{ request.path }}submit">Submit</a></b><br><br> 
+        </td>
+    </tr>
+</table>    
+</font>
+{% endblock %}

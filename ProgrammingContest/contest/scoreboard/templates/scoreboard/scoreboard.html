@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<font size = 4>
+<a href = '{{ instance.get_absolute_url }}create/'> Create New Post</a>
+<br><br>
+<table border = 5 cellpadding = 5 cellspacing = 4>
+
+    {% for instance in object_list %}
+    <tr>
+        <td>
+            {{ instance }}
+        </td>
+        <td>
+            {% for ins in instance. %}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+</font> 
+{% endblock %}

@@ -5,11 +5,10 @@
 <h1>Contest Detail</h1>
 <font size = 5>
 {% if request.user.userType == "administrator" %}
-<a href = '{{instance.get_absolute_url }}update' > Update </a>
+<a href = '{{object.get_absolute_url }}update' > Update </a>
 
 <h2>{{ object.contestName }}</h2>
 <p>{{ object.contestDate }}</p>
-<p>{{ object.contestParticipants }}</p>
 
     Contest Time: {{ object.contestHours }} Hours
 
@@ -36,15 +35,26 @@
     
     <table border = 3>
     <th> Problem Set </th>
+    
+    {% for instance in object.contestproblems.all %}
+        {{ instance.pk }}
+    {% endfor %}
 
     {% for instance in object.contestproblems.all %}
+
     <tr>
         <td>
+            <b><a href = '{{ object.get_absolute_url }}problem/{{instance.pk}}/'> {{ instance.problemName }}</a></b>
+        </td>
+    </tr>
+    <!-- <tr>
+        <td>
+        <b><a href = "">Submissions</a></b><br><br> 
         <b>Problem Name: </b> <br><br> {{ instance.problemName }} <br><br>
         <b>Problem Information: </b><br><br>{{ instance.problemInformation }} <br><br>
         <b>Sample Run:</b><br><br>{{ instance.problemTests }}
         </td>
-    </tr>
+    </tr> -->
     {% endfor %}
     </table>
     </font>

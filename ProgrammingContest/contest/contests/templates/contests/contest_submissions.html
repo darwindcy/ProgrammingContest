@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Submission List for Contest </h1>
+
+<table border = 2 cellpadding = 5 cellspacing = 4>
+
+    <tr>
+        <td><b>User Name</b></td>
+        <td><b>Problem Name</b></td>
+        <td><b>Submission </b></td>
+        <td><b>Force Download</b></td>
+        <td><b>Graded Status</b></td>
+        <td><b>Grade</b></td>
+    </tr>
+{% for instance in object_list %}
+    <tr>
+        <td> {{ instance.submissionTeam.userName }} </td>
+        <td> {{ instance.submissionProblem.problemName }} </td>
+        <td> {{ instance.submissionName }} - 
+        {% if instance.submissionFile %}
+            {% if instance.submissionGrade == "ungraded" %}
+                <a href = "{{ instance.submissionFile.url }}">download</a>
+            {% endif %}
+        {% endif %}
+        </td>
+        <td><a href = "{{ instance.submissionFile.url }}">Force Download </a></td>
+        <td>
+        {% if instance.submissionGrade == "pass" or instance.submissionGrade == "fail" %}
+            Graded
+        {% else %}
+            <a href = "{{ instance.get_grading_url }}"> Ungraded </a>
+        {% endif %}
+        </td>
+        <td>
+        {{ instance.submissionGrade }}
+        </td>
+    </tr>
+    
+{% endfor %}
+
+</table>
+
+{% endblock %}

@@ -7,7 +7,8 @@ from django.views.generic import(
     DetailView, 
     ListView, 
     UpdateView, 
-    DeleteView
+    DeleteView,
+    TemplateView
 )
 
 from .forms import ContestModelForm, ContestUpdateForm, ProblemCreateForm
@@ -17,6 +18,72 @@ from .models import Contest, Problem
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import datetime
+
+class ContestScoreBoardView(ListView):
+    template_name = "contests/contest_scoreboard.html"
+
+    def get_queryset(self):
+        contest_id       = self.kwargs.get("id")
+        current_contest     = Contest.objects.get(id = contest_id)
+        from users.models import CustomUser
+        teams = CustomUser.objects.filter(participatingIn = current_contest)
+        
+        return teams
+
+    def get_team_problem_submission(self, team, problem):
+        from submission.models import Submission
+        return self.objects.get(submissionTeam = team, submissionProblem = problem)
+        
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        contest_id       = self.kwargs.get("id")
+        current_contest     = Contest.objects.get(id = contest_id)
+        problem_list        = current_contest.contestproblems.all()
+
+        from submission.models import Submission
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+
+        from users.models import CustomUser
+        teams = CustomUser.objects.filter(participatingIn = current_contest)
+
+        context['submission_list']  = submissionList
+        context['problem_list']     = problem_list
+        context['team_list']        = teams
+        return context
+
+class ContestSubmissionsListView(ListView):
+    template_name = "contests/contest_submissions.html"
+    
+    def get_queryset(self):
+        from submission.models import Submission
+        contest_id       = self.kwargs.get("id")
+        current_contest     = Contest.objects.get(id = contest_id)
+        problem_list        = current_contest.contestproblems.all()
+
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        print(problem_list)
+        print(submissionList)
+        return submissionList
+
+class ProblemDetailView(DetailView):
+    template_name = "contests/contest_problem_detail.html"
+
+    def get_queryset(self):
+        id_     = self.kwargs.get("id")
+        print(id_)
+        currObj = Contest.objects.get(id = id_) 
+        return currObj.contestproblems.all()
+    
+    def get_object(self):
+        id_problem = self.kwargs.get("problem_id")
+        id_        = self.kwargs.get("id")
+
+        currentobj = Contest.objects.get(id = id_)
+
+        currObj    = currentobj.contestproblems.get(id = id_problem)
+        return currObj
 
 class ContestListView(ListView):
     template_name = "contests/contest_list.html"

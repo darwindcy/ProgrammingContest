@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h1>Contest Scoreboard</h1>
+
+<table border = 2 cellspacing = 4 cellpadding = 4>
+    <tr>
+        <td></td>
+        {% for problem in problem_list %}
+            <td>{{ team }} {{ problem }}</td>
+        {% endfor %}
+    </tr>
+    {%for team in team_list %}
+    <tr>
+        <td> {{ team.userName }} </td>
+        {% for problem in problem_list %}
+            <td>
+                {% for submission in submission_list %}
+                    {{ submission }}
+                {% endfor %}
+            </td>
+
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+
+</table>
+
+{% endblock %}
