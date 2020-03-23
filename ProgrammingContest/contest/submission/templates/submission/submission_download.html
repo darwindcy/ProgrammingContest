@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Download Page</h1>
+
+{% if object.submissionGrade == "inprocess" %}
+
+    Grading in Progress
+{% else %}
+    Download Link: <a href = '{{ object.submissionFile.url }}'> Download</a>
+{% endif %}
+
+{% endblock %}

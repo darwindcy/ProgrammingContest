@@ -17,7 +17,9 @@ from .models import Contest, Problem
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
 import datetime
+from collections import OrderedDict
 
 class ContestScoreBoardView(ListView):
     template_name = "contests/contest_scoreboard.html"
@@ -51,6 +53,32 @@ class ContestScoreBoardView(ListView):
         context['submission_list']  = submissionList
         context['problem_list']     = problem_list
         context['team_list']        = teams
+        score_data = {}
+        
+        for team in teams:
+            score_data[team] = {}
+            sum = 0
+            correct_submissions = 0
+            for problem in problem_list:
+                for each in submissionList.filter(submissionTeam = team, submissionProblem = problem):
+                    if each.submissionGrade == "pass":
+                        correct_submissions += 1
+                    score_data[team][problem] = each
+                    sum += each.get_submission_score()
+                
+            score_data[team]["sum"] = sum
+            score_data[team]["correct"] = correct_submissions
+        
+        context['score_data'] = score_data
+        print("---------------------------------------------Sorted Scores-------------------------------")
+        
+        od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["sum"], reverse=False))
+        od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["correct"], reverse=True))
+
+        context['score_data'] = od
+            
+        print("---------------------------------------------Sorted Scores-------------------------------")
+
         return context
 
 class ContestSubmissionsListView(ListView):
@@ -101,6 +129,11 @@ class ContestStartView(DetailView):
     def get_object(self):
         id_ = self.kwargs.get("id")
         Contest.objects.filter(id = id_).update(isRunning = True)
+        print("current Time")
+        
+        currentTime = datetime.datetime.now().time()
+        print(currentTime)
+        Contest.objects.filter(id = id_).update(startTime = currentTime)
         return get_object_or_404(Contest, id = id_)      
     
     # def form_valid(self, form):
@@ -115,6 +148,10 @@ class ContestStopView(DetailView):
     def get_object(self):
         id_ = self.kwargs.get("id")
         Contest.objects.filter(id = id_).update(isRunning = False)
+        print("stop time current time ")
+        currentTime = datetime.datetime.now().time()
+        print(currentTime)
+        Contest.objects.filter(id = id_).update(stopTime = currentTime)
         return ContestDetailView
 
 class ContestDetailView(DetailView):

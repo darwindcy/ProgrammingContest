@@ -2,19 +2,31 @@
 
 {% block content %}
 
-<h1>Contest Detail</h1>
 <font size = 5>
 {% if request.user.userType == "administrator" %}
-<a href = '{{object.get_absolute_url }}update' > Update </a>
 
-<h2>{{ object.contestName }}</h2>
-<p>{{ object.contestDate }}</p>
+<h2>Contest Name: {{ object.contestName }}</h2>
+
+<a href = '{{object.get_absolute_url }}update' > Update </a>
+<p>Scheduled Date: {{ object.contestDate }}</p>
 
     Contest Time: {{ object.contestHours }} Hours
 
     {% if object.contestMinutes != 0 and object.contestHours != " " %}
         and {{ object.contestMinutes }} minutes
     {% endif %}
+    <p><b>
+        Contest Duration: {{ object.contestDuration }} <br>
+        Contest Status:
+        {% if object.isRunning == True %}
+            Contest Active <br>
+            Start Time: {{ object.startTime }}
+        {% else %}
+            Contest Closed <br>
+        {% endif %}
+        </b>
+    </p>
+
     <p>
         <b>Current Teams: </b> <br>
         {% for instance in object.contestants.all %}
@@ -22,23 +34,9 @@
         {% endfor %}
     </p>
 {% endif %}
-    <p><b>
-        Contest Duration: {{ object.contestDuration }} <br>
-        Contest Status:
-        {% if object.isRunning == True %}
-            Contest Active
-        {% else %}
-            Contest Closed
-        {% endif %}
-        </b>
-    </p>
     
     <table border = 3>
     <th> Problem Set </th>
-    
-    {% for instance in object.contestproblems.all %}
-        {{ instance.pk }}
-    {% endfor %}
 
     {% for instance in object.contestproblems.all %}
 

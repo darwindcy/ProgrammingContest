@@ -8,6 +8,7 @@ from django.views.generic import(
     CreateView, 
     ListView, 
     UpdateView,
+    DetailView
 )
 
 from .models import Submission
@@ -23,6 +24,14 @@ class SubmissionListView(ListView):
         elif(self.request.user.userType.lower() == "team"):
             queryset = Submission.objects.filter(submissionTeam = self.request.user)
         return queryset
+
+class SubmissionDownloadView(DetailView):
+    template_name = "submission/submission_download.html"
+    queryset = Submission.objects.all()
+    
+    def get_object(self):
+        id_ = self.kwargs.get("id")
+        return get_object_or_404(Submission, id = id_)
 
 class SubmissionGradeView(UpdateView):
     template_name = "submission/submission_grade.html"
@@ -62,7 +71,8 @@ class SubmissionCreateView(CreateView):
         print("/*------------------------Hello world----------------------*/")
         form.instance.totalSubmissionCount = does_exist(self)
         print("Total Submissions = " + repr(form.instance.totalSubmissionCount))
-       
+
+        print(form.instance.submissionTime)
         print(form.instance.submissionFile.name)
         print(form.instance.submissionProblem.problemName)
         return super().form_valid(form)
@@ -87,5 +97,7 @@ def does_exist(self):
         for instance in qs:
             submissionCount = instance.totalSubmissionCount + 1
             instance.delete()
+    else:
+        submissionCount = 1
     
     return submissionCount

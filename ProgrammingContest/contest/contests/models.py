@@ -16,9 +16,11 @@ class Contest(models.Model):
     contestDuration         = models.DurationField(default = datetime.timedelta(days = 0, seconds=7200))
 
     isRunning               = models.BooleanField(default = False)
+    startTime               = models.TimeField(null = True)
+    stopTime                = models.TimeField(null = True)
     #contestProblems         = models.ForeignKey(Problem, default = None, on_delete = models.SET_NULL, null = True)
 
-
+    
     def get_absolute_url(self):
         return reverse("contests:contest-detail", kwargs = {"id": self.id})
 

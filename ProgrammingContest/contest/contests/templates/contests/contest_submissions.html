@@ -10,6 +10,7 @@
         <td><b>User Name</b></td>
         <td><b>Problem Name</b></td>
         <td><b>Submission </b></td>
+        <td><b>Proceed to Download</b></td>
         <td><b>Force Download</b></td>
         <td><b>Graded Status</b></td>
         <td><b>Grade</b></td>
@@ -25,6 +26,8 @@
             {% endif %}
         {% endif %}
         </td>
+        <td><a href = "{{ instance.confirm_download_url }}"> Download </a></td>
+
         <td><a href = "{{ instance.submissionFile.url }}">Force Download </a></td>
         <td>
         {% if instance.submissionGrade == "pass" or instance.submissionGrade == "fail" %}
