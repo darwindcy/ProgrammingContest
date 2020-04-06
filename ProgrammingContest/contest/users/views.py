@@ -56,7 +56,7 @@ class UserCreateView(CreateView):
         return super().form_valid(form)
 
 class UserUpdateView(UpdateView):
-    template_name = "users/user_create.html"
+    template_name = "users/user_update.html"
     form_class = UserUpdateForm
     queryset = CustomUser.objects.all()
 

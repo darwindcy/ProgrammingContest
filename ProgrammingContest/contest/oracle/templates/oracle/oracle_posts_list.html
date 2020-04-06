@@ -1,43 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<div class = "postscontainer">
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_oracle.css' %}" />
 
-<font size = 4>
-<a href = '{{ instance.get_absolute_url }}create/'> Create New Post</a>
+<a href = '{{ instance.get_absolute_url }}create/' id = "createnew"> Create New Post</a>
 <br><br>
-<table border = 5 cellpadding = 5 cellspacing = 4>
+<table>
 {% for instance in object_list %}
-<tr>
-    <td>
-    Posted By: <br>
+    <tr>
+        <td>
+    <ul class = "item">
+        <li>
+    <b>Posted By:</b>
     {% if instance.postUser.userName != None and instance.postUser.userName != " " %}
         {{ instance.postUser }}
     {% else %}
         User Name not available
     {% endif %}
-    
-    <br>
-    Post Question: {{ instance.postQuestion }}
-    <br>
-    <br>
+        </li>
+
+        <li><b>
+    Post Question: </b>{{ instance.postQuestion }}
+    </li>
+
+
     {% if instance.postAnswer != None and instance.postAnswer != "" %}
-        Answered By: {{ instance.postAnswerer }} <br>
-        Answer: {{ instance.postAnswer }}
+        <li><b>Answered By: {{ instance.postAnswerer }}</b></li>
+        <li><b>Answer: </b>{{ instance.postAnswer }}</li>
     {% else %}
-        Not Answered
+        <li>Not Answered </li>
     {% endif %}
-    <br>
+    </li>
+    
+    <li>
     <a href = '{{ instance.get_absolute_url }}'> Detail </a>
-    &nbsp; &nbsp;
+
     {% if request.user.userType == "administrator" %}
+
     <a href = '{{ instance.get_absolute_url }}answer/'> Answer </a>
-    &nbsp; &nbsp;
+
     <a href = '{{ instance.get_absolute_url }}delete/'> Delete </a>
+    </li>
+    
     {% endif %}
-</p>
-</td>
-</tr>
+    </li>
+    </ul>
+    </td>
+    </tr>
 {% endfor %}
 </table>
-</font> 
+</div>
 {% endblock %}

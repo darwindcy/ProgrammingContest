@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_scoreboard.css' %}" />
+
+<div class = "scoreboardcontainer">
 
 <h1>Submission List for Contest </h1>
 
-<table border = 2 cellpadding = 5 cellspacing = 4>
+<table>
 
     <tr>
         <td><b>User Name</b></td>
@@ -44,5 +48,6 @@
 {% endfor %}
 
 </table>
+</div>
 
 {% endblock %}

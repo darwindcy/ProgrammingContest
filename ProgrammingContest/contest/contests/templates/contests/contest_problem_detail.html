@@ -1,36 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_detail.css' %}" />
+
+<div class = "pdetailcontainer">
 
 <h1>Problem Detail</h1>
-<font size = 5>
-    <table border = 3>
-    <tr>
-        <td>
-        <b>Problem Name: </b> <br><br> {{ object.problemName }} <br><br>
-        <b>Problem Information: </b><br><br>{{ object.problemInformation }} <br><br>
-        <b>Sample Run:</b><br><br>{{ object.problemTests }}
-        </td>
+    <table>
+        <tr>
+            <td><b>Problem Name: </b> <br><br> {{ object.problemName }}</td>
+            
+            {% if object.contest.isRunning == True %}
+            <td rowspan="3" class = "submitbtn">
+            {% if currSubmission.submissionGrade != "pass" %}
+                <b><a href = "{{ request.path }}submit">Submit</a></b><br><br> 
+            {% else %}
+                <b>Submission Accepted</b>
+            {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+
+        <tr><td><b>Problem Information: </b><br><br>{{ object.problemInformation }}</td></tr>
+        <tr><td><b>Sample Run:</b><br><br>{{ object.problemTests }}</td></tr>
         
-        {% if object.associatedProblem.problemName %}
-            not empty
-        {% else %}
-            empty
-        {% endif %}
 
-        {% for ins in object.submission_set.all %}
-            {{ ins.submissionName }}
-        {% endfor %}
-        
 
-        <td>
-            <b><a href = "{{ request.path }}submit">Submit</a></b><br><br> 
-        </td>
-
-        <td>
-            <b><a href = "{{ request.path }}submit">Submit</a></b><br><br> 
-        </td>
-    </tr>
 </table>    
-</font>
+</div>
 {% endblock %}

@@ -1,0 +1,86 @@
+.newcontainer{
+    position: relative;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 16px;
+    margin-top: auto;
+    margin: 20px;
+}
+
+.newproblemcontainer{
+    position: relative;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 16px;
+    margin-top: auto;
+    margin: 20px;
+}
+
+input[type = text], textarea{
+    width: 100%;
+}
+
+.newproblemcontainer ul li{
+    all: unset;
+    background-color: #f2f2f2;
+    display: block;
+    
+}
+.newproblemcontainer table, td {
+    border-collapse: collapse;
+    width: 60%;
+}
+
+.newproblemcontainer th, td {
+    border: 1px solid black;
+}
+
+.newcontainer ul li{
+    all: unset;
+    background-color: #f2f2f2;
+    display: block;
+    
+}
+.newcontainer table {
+    border-collapse: collapse;
+}
+
+.newcontainer th, td {
+    border: 1px solid black;
+}
+
+table{
+    border: 2px solid purple;
+    font-size: 16px;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+    border-spacing: 20px;
+    resize: none;
+}
+td, th{
+    height: 40px;
+    vertical-align: top;
+    text-align: left;
+    padding: 20px;
+}
+textarea{
+    resize: none;
+}
+
+input[type = submit], button{
+    background-color: rgb(184, 62, 62);
+    color: white;
+    margin: 10px 10px;
+    cursor: pointer;
+    height: 35px;
+    width: 150px;
+    border-radius: 15px;
+}
+button a{
+    color: white;
+}
+
+input[type = submit]:hover, button:hover{
+    background-color: red;
+}

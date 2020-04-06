@@ -1,29 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<div class = "sublistcontainer">
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_lists.css' %}" />
 
 
 <h1>Submission List</h1>
 <table>
+
+    <tr>
+        <td>
+            <b>Submitted By</b>
+        </td>
+        <td><b>Problem Name</b></td>
+        <td><b>Submission Name</b></td>
+        <td><b>Download Status</b></td>
+        <td><b>Score/Count</b></td>
+    </tr>
 {% for instance in object_list %}
     <tr>
         <td>
-            {{ instance.id }}
-            {{ instance.submissionTeam.userName }} --
-            {{ instance.submissionProblem.problemName }}:
-            {{ instance.submissionName }} - 
+            {{ instance.submissionTeam.userName }}
+        </td>
+        <td>{{ instance.submissionProblem.problemName }}</td>
+        <td>{{ instance.submissionName }}</td>
+        <td>
             {% if instance.submissionFile %}
                 <a href = "{{ instance.submissionFile.url }}">download</a><br><br>
+            {% else %}
+                Unavailable
             {% endif %}
 
         </td>
         <td>
-        Count - {{ instance.totalSubmissionCount }}
-        Score - {{ instance.get_submission_score }}
-    </td>
+            Count - {{ instance.totalSubmissionCount }}
+            Score - {{ instance.get_submission_score }}
+        </td>
     </tr>
 
 {% endfor %}
 </table>
+</div>
 
 {% endblock %}

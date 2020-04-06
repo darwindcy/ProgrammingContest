@@ -1,21 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<font size = 4>
-    <a href = '{{ instance.get_absolute_url }}create/'> Create New User</a>
+
+{% load static %}
+<div class = "container">
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_lists.css' %}" />
+
+    <a href = '{{ instance.get_absolute_url }}create/' id = "createnew"> Create New User</a>
     <br><br>
-    <table border = 5 cellpadding = 5 cellspacing = 4>
-{% for instance in object_list %}
-<tr>
-<td>
-    <a href = '{{instance.get_absolute_url }}' > 
+    <table>
+        <tr>
+            <th>User Name</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+    {% for instance in object_list %}
+    <tr>
+        <td>
+        <a href = '{{instance.get_absolute_url }}' > 
         {{ instance.userName}}
-    </a>
-    &nbsp; <a href = '{{instance.get_absolute_url }}update' > update </a>
-    &nbsp; <a href = '{{instance.get_absolute_url }}delete' > delete </a>
-</td>
+        </a>
+        </td>
+    <td><a href = '{{instance.get_absolute_url }}update' > update </a></td> 
+    <td><a href = '{{instance.get_absolute_url }}delete' > delete </a></td>
 </tr>
 {% endfor %}
 </table>
-</font>
+
+</div>
 {% endblock %}

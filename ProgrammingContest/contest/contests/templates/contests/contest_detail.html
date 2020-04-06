@@ -1,59 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_detail.css' %}" />
 
-<font size = 5>
-{% if request.user.userType == "administrator" %}
+<div class = "detailcontainer">
 
+<h1>Contest Detail</h1>
 <h2>Contest Name: {{ object.contestName }}</h2>
-
-<a href = '{{object.get_absolute_url }}update' > Update </a>
-<p>Scheduled Date: {{ object.contestDate }}</p>
-
-    Contest Time: {{ object.contestHours }} Hours
+    
+{% if request.user.userType == "administrator" %}
+<table>
+    <tr>
+        <th>
+            Scheduled Date
+        </th>
+        <th>Contest Time</th>
+        <th>Contest Duration</th>
+        <th>Contest Status</th>
+    </tr>
+    <tr>
+    <td>
+        {{ object.contestDate }}
+    </td>
+    <td>{{ object.contestHours }} Hours 
 
     {% if object.contestMinutes != 0 and object.contestHours != " " %}
         and {{ object.contestMinutes }} minutes
     {% endif %}
-    <p><b>
-        Contest Duration: {{ object.contestDuration }} <br>
-        Contest Status:
+    </td>
+    <td>{{ object.contestDuration }} </td>
+    <td>
         {% if object.isRunning == True %}
-            Contest Active <br>
+            Contest Active
             Start Time: {{ object.startTime }}
         {% else %}
-            Contest Closed <br>
+            Contest Closed
         {% endif %}
-        </b>
-    </p>
+    </td>
+</td>
+</tr>
+</table> 
 
-    <p>
-        <b>Current Teams: </b> <br>
+<b><a href = '{{object.get_absolute_url }}update' class = "update"> Update </a></b>
+
+<table>
+    <tr><th>Current Teams</th></tr>
+    
         {% for instance in object.contestants.all %}
-            {{ instance }} <br>
+        <tr><td>
+            {{ instance }}
+        </td></tr>
         {% endfor %}
-    </p>
+</table>
+
 {% endif %}
     
-    <table border = 3>
+<table>
     <th> Problem Set </th>
 
     {% for instance in object.contestproblems.all %}
 
     <tr>
         <td>
-            <b><a href = '{{ object.get_absolute_url }}problem/{{instance.pk}}/'> {{ instance.problemName }}</a></b>
+            <a href = '{{ object.get_absolute_url }}problem/{{instance.pk}}/'> {{ instance.problemName }}</a>
         </td>
     </tr>
-    <!-- <tr>
-        <td>
-        <b><a href = "">Submissions</a></b><br><br> 
-        <b>Problem Name: </b> <br><br> {{ instance.problemName }} <br><br>
-        <b>Problem Information: </b><br><br>{{ instance.problemInformation }} <br><br>
-        <b>Sample Run:</b><br><br>{{ instance.problemTests }}
-        </td>
-    </tr> -->
     {% endfor %}
-    </table>
-    </font>
+</table>
+
+</div>
 {% endblock %}

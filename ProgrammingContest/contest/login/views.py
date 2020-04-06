@@ -10,6 +10,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import FormView, RedirectView, TemplateView
+from .forms import CustomAuthenticationForm
 
 from contests.models import Contest
 
@@ -24,7 +25,7 @@ class UnloggedPageView(TemplateView):
 class LoginPageView(FormView):
     template_name = "login/login_page2.html"
     success_url = '/account'
-    form_class = AuthenticationForm
+    form_class = CustomAuthenticationForm
 
     redirect_field_name = REDIRECT_FIELD_NAME
 

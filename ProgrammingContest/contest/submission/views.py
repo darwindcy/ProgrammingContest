@@ -31,7 +31,10 @@ class SubmissionDownloadView(DetailView):
     
     def get_object(self):
         id_ = self.kwargs.get("id")
-        return get_object_or_404(Submission, id = id_)
+        obj = Submission.objects.get(id = id_)
+
+        print(obj.submissionGrade)
+        return obj
 
 class SubmissionGradeView(UpdateView):
     template_name = "submission/submission_grade.html"
@@ -59,12 +62,12 @@ class SubmissionCreateView(CreateView):
     form_class = SubmissionCreateForm
 
     def form_valid(self, form):
-
         id_problem = self.kwargs.get('problem_id')
         print(id_problem)
         form.instance.submissionName        =  form.instance.submissionFile.name
         form.instance.submissionTime        =  datetime.datetime.now().time()
         form.instance.submissionTeam        =  self.request.user
+        form.instance.submissionGrade       =  "ungraded"
         from contests.models import Problem
         form.instance.submissionProblem     =  Problem.objects.get(id = id_problem)
 

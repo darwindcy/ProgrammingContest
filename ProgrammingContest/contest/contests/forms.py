@@ -4,6 +4,7 @@ from .models import Contest, Problem
 
 from users.models import CustomUser
 
+import datetime
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -46,16 +47,13 @@ class ContestUpdateForm(forms.ModelForm):
 class ContestModelForm(forms.ModelForm):
     contestName         = forms.CharField(label = "Contest Name")
     contestDate         = forms.DateField(label = "Date", widget = DateInput)
-    #contestants = forms.MultipleChoiceField(label = "Contestants",
-     #                   widget = forms.CheckboxSelectMultiple,
-      #                  choices = Contest.contestants.all())
+
     contestants         = forms.ModelMultipleChoiceField(widget = forms.CheckboxSelectMultiple,
         queryset = CustomUser.objects.all(), required = False)
 
     contestHours        = forms.IntegerField(label = "Hours", min_value = 0, required = True)
     contestMinutes      = forms.IntegerField(label = "Minutes", min_value = 0, required = True)
 
-    #contestQuestions    = forms.MultipleChoiceField(label = "Problems List", required = False)
 
     def clean(self, *args, **kwargs):
         #forms.raiseValidationError("Please Enter a Valid Time")
@@ -63,6 +61,10 @@ class ContestModelForm(forms.ModelForm):
         qs = Contest.objects.filter(contestName = contestName)
         if qs.exists():
             raise forms.ValidationError("Another Contest with same name present")
+        contestDate     = self.cleaned_data.get("contestDate")
+        if(contestDate < datetime.datetime.now().date()):
+            raise forms.ValidationError("Today or later Date needed")
+
         contestHours    = self.cleaned_data.get("contestHours")
         contestMinutes  = self.cleaned_data.get("contestMinutes")
         if(contestHours != 0 or contestMinutes != 0):

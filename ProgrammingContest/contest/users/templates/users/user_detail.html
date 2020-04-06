@@ -1,18 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_detail.css' %}" />
 
+<div class = "detailcontainer">
 <h1>User Detail</h1>
-<h2>{{ object.userName }}</h2>
-<p>{{ object.userType }}</p>
-<p> {{ object.password }} </p>
+<table>
+    <tr><th>User Name</th>
+    <th>User Type</th></tr>
+    <tr>
+        <td>{{ object.userName }}</td>
+        <td>{{ object.userType }}</td>
+    </tr>
+</table>
 
-<p>
-    <b>Contest Affiliations: </b> <br>
-    {{ object.participatingIn.count }} <br>
+{% if object.participatingIn.count != 0 %}
+    <table>
+    <tr><td>Contest Affiliations:</td></tr>
     {% for instance in object.participatingIn.all %}
-        {{ instance }} <br>
+        <tr><td>{{ instance }}</td></tr>
     {% endfor %}
-</p>
+    {% endif %}
+    </table>
+
+</div>
 
 {% endblock %}

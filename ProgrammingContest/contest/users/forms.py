@@ -38,7 +38,6 @@ class UserModelForm(forms.ModelForm):
         return user
 
 class UserUpdateForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField()
     userType = forms.ChoiceField(label = "User Type", choices = user_choices, required = True)
     
     from contests.models import Contest
@@ -46,10 +45,10 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta: 
         model = CustomUser
-        fields = ('userName', 'password', 'userType', 'participatingIn')
-    
+        fields = ('userName', 'userType', 'participatingIn')
+
     def clean_password(self):
-        return self.initial["password"]
+        return self.initial("password")
 
 
 

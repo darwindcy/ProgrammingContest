@@ -2,26 +2,39 @@
 
 {% block content %}
 
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_detail.css' %}" />
+
+<div class = "detailcontainer">
 
 <h1>Post Detail</h1>
 
-<p>
+<table>
+    <tr>
+        <td>
+            <b>
     {% if object.postUser != None and object.postUser != " " %}
         Posted By: {{ object.postUser }}
     {% else %}
-        <p>User Name not available</p>
+        User Name not available
     {% endif %}
+            
+        <br>
+        Question: </b><br><br>{{ object.postQuestion }}</td></tr>
 
-    <h2>{{ object.postQuestion }}</h2>
+    <tr><td>    
+        {% if object.postAnswer != None and object.postAnswer != "" %}
+        <b>Post Answer:</b><br><br>{{ object.postAnswer }}<br>
+        <b>Answered By: {{ object.postAnswerer }}</b>
 
-    {% if object.postAnswer != None and object.postAnswer != "" %}
-        Post Answer: {{ object.postAnswer }} <br>
-        Answered By: {{ object.postAnswerer }}
     {% else %}
-        Post Not answered yet
-    {% endif %}
+        <b>
+            Post Not answered yet
+        </b>
+    {% endif %}</td></tr>
 
-</p>
 
+</table>
 
+</div>
 {% endblock %}

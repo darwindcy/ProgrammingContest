@@ -1,26 +1,27 @@
+{% load static %}
 <nav>
+    <link rel = "stylesheet" type = "text/css" href = "{% static 'css/navbar_style.css' %}" />
     <div id = "menu">
         <ul>
-            <div>
-                <p>
-                    {% if request.user.userName != None and request.user.userName != "" %}
+            <li id = "user">
+            {% if request.user.userName != None and request.user.userName != "" %}
                         Current User: {{ request.user.userName }}
                     {% else %}
                         Current User: No User Logged In
-                    {% endif %}
-                    <!-- Current User: {{ request.user.userName }} -->
-                </p>
-            </div>
-
+            {% endif %}
+            </li>
+            <li><img src = "{% static 'logo/UElogo.jpg' %}" class = "logo1"/></li>
+            <li><img src = "{% static 'logo/ACMlogo.png' %}" class = "logo"/></li>
             <li><a href="{% url 'account:account-view' %}"> Homepage</a></li>
-            <li>Somewhere</li>
-            <li>Somewhere</li>
-            <a href="{% url 'login:login-page' %}"> login </a> </br>
-            <a href="{% url 'contests:contest-list' %}"> contests </a> </br>
-            <a href="{% url 'users:user-list' %}"> users </a> </br>
-            <a href="{% url 'oracle:posts-list' %}"> Oracle </a> </br>
-            <a href="{% url 'submission:submission-list' %}"> Submissions </a> </br>
-            <a href="{% url 'login:logout-page' %}"> Logout </a> </br>
+            <li><a href = "#somewhere">Somewhere</a></li>
+            <li><a href = "#somewhere">Somewhere</a></li>
+            <li><a href="{% url 'login:login-page' %}"> login </a></li>
+            <li><a href="{% url 'contests:contest-list' %}"> contests </a> </li>
+            <li><a href="{% url 'users:user-list' %}"> users </a></li>
+            <li><a href="{% url 'oracle:posts-list' %}"> Oracle </a></li>
+            <li><a href="{% url 'submission:submission-list' %}"> Submissions </a></li>
+            <li style = "float:right"><a href="{% url 'login:logout-page' %}"> Logout </a></li>
         </ul>
+        
     </div>
 </nav>

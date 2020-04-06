@@ -53,6 +53,7 @@ class ContestScoreBoardView(ListView):
         context['submission_list']  = submissionList
         context['problem_list']     = problem_list
         context['team_list']        = teams
+        context['contest']          = current_contest
         score_data = {}
         
         for team in teams:
@@ -91,8 +92,7 @@ class ContestSubmissionsListView(ListView):
         problem_list        = current_contest.contestproblems.all()
 
         submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
-        print(problem_list)
-        print(submissionList)
+
         return submissionList
 
 class ProblemDetailView(DetailView):
@@ -112,6 +112,22 @@ class ProblemDetailView(DetailView):
 
         currObj    = currentobj.contestproblems.get(id = id_problem)
         return currObj
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        id_problem = self.kwargs.get("problem_id")
+
+        from submission.models import Submission
+        qs = Submission.objects.filter(submissionTeam = self.request.user, submissionProblem = Problem.objects.get(id = id_problem))
+        
+        if qs.exists:
+            for ins in qs:
+                currSubmission = ins
+                context['currSubmission'] = currSubmission
+        
+        
+        return context
 
 class ContestListView(ListView):
     template_name = "contests/contest_list.html"
@@ -218,7 +234,7 @@ class ContestCreateView(CreateView):
         return super().form_valid(form)
 
 class ContestUpdateView(UpdateView):
-    template_name = "contests/contest_create.html"
+    template_name = "contests/contest_update.html"
     form_class = ContestUpdateForm
     queryset = Contest.objects.all()
 

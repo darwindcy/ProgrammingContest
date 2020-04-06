@@ -1,0 +1,18 @@
+.scoreboardcontainer{
+    position: relative;
+    background-color: white;
+    text-align: center;
+}
+
+table{
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+
+}
+
+table, th, td{
+    border: 1px solid black;
+    padding: 10px;
+}

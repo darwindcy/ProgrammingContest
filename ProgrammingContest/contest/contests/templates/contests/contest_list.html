@@ -1,29 +1,48 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<font size = 4>
-    <a href = '{{ get_absolute_url }}create/'> Create New Contest</a>
+
+{% load static %}
+<div class = "container">
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_lists.css' %}" />
+
+    <a href = '{{ get_absolute_url }}create/' id = "createnew"> Create New Contest</a>
+    <a href = '{{ get_absolute_url }}problems/create/' id = "createnew"> Create New Problem</a>
     <br><br>
-    <table border = 5 cellpadding = 5 cellspacing = 4>
+    <table>
+        <tr>
+            <th>Contest Name</th>
+            <th>Start</th>
+            <th>Stop</th>
+            <th>Status</th>
+            <th>Update</th>
+            <th>Delete</th>
+            <th>Submissions</th>
+            <th>Scoreboard</th>
+        </tr>
         {% for instance in object_list %}
         <tr>
         <td>
             <a href = '{{ instance.get_absolute_url }}' > 
                 {{ instance.contestName }}
             </a>
+        </td>
  
-        &nbsp; <a href = '{{ instance.get_absolute_url }}start' > start </a>
-        &nbsp; <a href = '{{ instance.get_absolute_url }}stop' > stop </a>
-        &nbsp; <a href = '{{ instance.get_absolute_url }}update' > update </a>
-        &nbsp; <a href = '{{ instance.get_absolute_url }}delete' > delete </a>
-        &nbsp; <a href = '{{ instance.get_absolute_url }}submissions' > submissions </a>
-        &nbsp; <a href = '{{ instance.get_absolute_url }}scoreboard' > scoreboard </a>
-    <!-- <form action = "." method = 'POST'> {% csrf_token %}
-        <input type = "submit" value = "Start"> 
-    </form> -->
-</td>
+        <td><a href = '{{ instance.get_absolute_url }}start' > start </a></td>
+        <td><a href = '{{ instance.get_absolute_url }}stop' > stop </a></td>
+        
+        {% if instance.isRunning == True %} 
+        <td>Running</td>
+        {% else %}
+        <td>Stopped</td>
+        {% endif %}
+
+        <td><a href = '{{ instance.get_absolute_url }}update' > update </a></td>
+        <td><a href = '{{ instance.get_absolute_url }}delete' > delete </a></td>
+        <td><a href = '{{ instance.get_absolute_url }}submissions' > submissions </a></td>
+        <td><a href = '{{ instance.get_absolute_url }}scoreboard' > scoreboard </a></td>
+
 </tr>
 {% endfor %}
 </table>
-</font>
+</div>
 {% endblock %}

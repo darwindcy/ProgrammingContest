@@ -1,12 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_delete.css' %}" />
 
+<div class = "deletecontainer">
 <form action = '.' method="POST">{% csrf_token %}
-    <h1>Do you want to delete this User" {{ object.userName }}"? </h1>
-    <p>
-        <input type="submit", value = "Yes" /> <a href="../">Cancel</a>
-    </p>
+    <h1>Do you want to delete this User? </h1>
+    <table>
+        <tr><th colspan = 2>{{ object.userName }}</th></tr>
+        <tr>
+            <td><input type="submit", value = "Yes" /> 
+            </td>
+            <td><a href="../../" class="cancelbutton">Cancel</a></td>
+        </tr>
+  
+    </table>
 </form>
-
+</div>
 {% endblock %}

@@ -2,69 +2,17 @@
 {% load app_tags %}
 {% block content %}
 
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_scoreboard.css' %}" />
+
+<div class = "scoreboardcontainer">
 
 <h1>Contest Scoreboard</h1>
+<h2>Contest Name: {{ contest.contestName }}</h2>
 
-<table border = 2 cellspacing = 4 cellpadding = 4>
+<table>
     <tr>
-        <td></td>
-        {% for problem in problem_list %}
-            <td>{{ team }} {{ problem }}</td>
-        {% endfor %}
-        <td>Total Score</td>
-    </tr>
-    {% for teamname, value in score_data.items %}
-        <tr>
-            <td>{{ teamname }}</td>
-
-            {% with score_data|get_item:teamname as team_submissions %}
-        
-            {% for problem in problem_list %}
-            <td>
-                {% with team_submissions|get_item:problem as eachSubmission %}
-                    Total Points: {{ eachSubmission.get_submission_score }} <br>
-                    Total Submissions: {{ eachSubmission.totalSubmissionCount }}
-                {% endwith %}
-            </td>
-            {% endfor %}
-            <td>Total Score: {{ team_submissions|get_item:"sum" }}<br>
-            Problems Solved: {{ team_submissions|get_item:"correct" }}</td>
-            {% endwith %}
-        </tr>
-    {% endfor %}
-</table>
-
-<br>
-<table border = 2 cellspacing = 4 cellpadding = 4>
-    <tr>
-        <td></td>
-        {% for problem in problem_list %}
-            <td>{{ team }} {{ problem }}</td>
-        {% endfor %}
-        <td>Total Score</td>
-    </tr>
-    {%for team in team_list %}
-    <tr>
-        <td> {{ team.userName }} </td>
-        {% for problem in problem_list %}
-            <td>
-                {% get_team_problem_submission submission_list team problem as submission %}
-                    {% for s in submission %}
-                        Total Submissions: {{ s.totalSubmissionCount }}<br>
-                        Final Score: {{ s.get_submission_score }}
-                        
-                    {% endfor %}
-            </td>
-        {% endfor %}
-        <td>Total Score: {% get_total_team_score submission_list team %}</td>
-    </tr>
-    {% endfor %}
-</table>
-<br>
-
-<table border = 2 cellspacing = 4 cellpadding = 4>
-    <tr>
-        <td></td>
+        <td>TeamName<br>Problems</td>
         {% for problem in problem_list %}
             <td>{{ team }} {{ problem }}</td>
         {% endfor %}
@@ -90,6 +38,6 @@
     {% endfor %}
 </table>
 
-
+</div>
 
 {% endblock %}

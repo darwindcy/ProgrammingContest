@@ -1,0 +1,46 @@
+.deletecontainer{
+    position: relative;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 16px;
+    margin-top: auto;
+    margin: 20px;
+}
+
+table{
+    border: 2px solid purple;
+    font-size: 16px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    border-spacing: 20px;
+    resize: none;
+}
+
+td, th{
+    vertical-align: middle;
+    text-align: center;
+    padding: 20px;
+    font-size: 25px;
+}
+
+input[type = submit], .cancelbutton{ 
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    color: blue;
+    cursor: pointer;
+    border: 1px solid black;
+    padding: 5px;
+    background-color: rgb(240, 236, 236);
+    width: 100px;
+}
+cancelbutton{
+    text-shadow:0 0 2px red;
+    margin: 5px 2px;
+    cursor: pointer;
+    height: 35px;
+    width: 100px;
+    border: 1px solid black;
+    font-size: 20px;
+}

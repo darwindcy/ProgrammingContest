@@ -13,7 +13,7 @@ class OraclePostForm(forms.ModelForm):
         ]
     
 class OracleUpdateForm(forms.ModelForm):
-    postQuestion        = forms.CharField(label = "Question", disabled = True)
+    postQuestion        = forms.CharField(label = "Question", widget = forms.Textarea, disabled = True)
     postAnswer          = forms.CharField(label = "Answer", widget = forms.Textarea, max_length = 500)
     #postAnswerer        = forms.CharField(label = "Answered By", disabled = True)
 

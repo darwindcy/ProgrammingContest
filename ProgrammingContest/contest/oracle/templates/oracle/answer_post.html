@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_createnew.css' %}" />
 
+<div class = "newcontainer">
 <form action = '.' method = 'POST' > {% csrf_token %}
-    {{ form.as_p }}
-
+    <table>
+    {{ form.as_table }}
+    </table>
     <input type = 'submit' value = 'Answer' />
 </form>
-
+</div>
 
 {% endblock %}

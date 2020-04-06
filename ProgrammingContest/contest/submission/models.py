@@ -9,7 +9,8 @@ from django.urls import reverse
 import datetime
 
 def get_upload_path(instance, filename):
-    return 'submissions/{0}/{1}/{2}'.format(instance.submissionProblem.contest.contestName, instance.submissionTeam.userName, filename)
+    newname = "sub_for_id_" + str(instance.submissionProblem.id) + ".txt"
+    return 'submissions/{0}/{1}/{2}'.format(instance.submissionProblem.contest.contestName, instance.submissionTeam.userName, newname)
 
 class CustomManager(models.Manager):
     def delete(self):

@@ -8,7 +8,6 @@ from .views import (
     ContestDeleteView,
     ContestCreateView,
     ContestUpdateView,
-    ContestDetailTeamView,
     ProblemCreateView,
     ContestStartView,
     ContestStopView,
