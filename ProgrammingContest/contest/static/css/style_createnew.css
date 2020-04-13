@@ -6,6 +6,9 @@
     margin-top: auto;
     margin: 20px;
 }
+.submissioncontainer{
+    text-align: center;
+}
 
 .newproblemcontainer{
     position: relative;

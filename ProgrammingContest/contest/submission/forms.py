@@ -8,14 +8,22 @@ grade_choices = [
         ('ungraded', 'UNGRADED'),
         ('inprocess', 'INPROCESS')
     ]
+language_choices = [
+        ('java', 'JAVA'),
+        ('c++', 'C++'),
+        ('c', 'C'),
+        ('python', 'PYTHON'),
+        ('c#', 'C#')
+    ]
 
 
 class SubmissionCreateForm(forms.ModelForm):
+    submissionLanguage  = forms.ChoiceField(label = "Programming Language", choices = language_choices, initial = "Select ", required = True)
     submissionFile      = forms.FileField(label = "Select a file", required = False)
 
     class Meta:
         model = Submission
-        fields = ['submissionFile']
+        fields = ['submissionLanguage', 'submissionFile']
 
 class SubmissionGradeForm(forms.ModelForm):
     submissionGrade     = forms.ChoiceField(label = "Grade", choices = grade_choices)

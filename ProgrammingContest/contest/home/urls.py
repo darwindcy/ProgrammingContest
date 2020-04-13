@@ -2,8 +2,8 @@ from django.urls import path
 
 app_name = 'home'
 
-from .views import Homepageview
+from .views import HomePageView
 
 urlpatterns = [
-    path('', Homepageview.as_view(), name = 'homepage-view')
+    path('', HomePageView.as_view(), name = 'homepage-view')
 ]

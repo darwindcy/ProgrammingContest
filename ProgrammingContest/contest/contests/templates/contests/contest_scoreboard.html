@@ -10,6 +10,10 @@
 <h1>Contest Scoreboard</h1>
 <h2>Contest Name: {{ contest.contestName }}</h2>
 
+{% if request.user.userType == "team" and not active_status %}
+    <h2>Less than 30 minutes left for contest closing, Scoreboard Unavailable</h2>
+{% else %}
+
 <table>
     <tr>
         <td>TeamName<br>Problems</td>
@@ -24,12 +28,14 @@
         {% with score_data|get_item:team as team_submissions %}
         
         {% for problem in problem_list %}
-        <td>
-            {% with team_submissions|get_item:problem as eachSubmission %}
+        {% with team_submissions|get_item:problem as eachSubmission %}
+        <td class="{% if eachSubmission.submissionGrade == 'pass' %} pass {% elif eachSubmission.submissionGrade == 'fail' %} fail {% else %} ungraded {% endif %}">
+            
                 Total Score: {{ eachSubmission.get_submission_score }} <br>
                 Total Submissions: {{ eachSubmission.totalSubmissionCount }}
-            {% endwith %}
         </td>
+            {% endwith %}
+        
         {% endfor %}
         <td>Total Score: {{ team_submissions|get_item:"sum" }}</td>
 
@@ -37,7 +43,7 @@
     </tr>
     {% endfor %}
 </table>
-
+{% endif %}
 </div>
 
 {% endblock %}

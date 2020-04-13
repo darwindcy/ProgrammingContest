@@ -20,7 +20,39 @@ class Contest(models.Model):
     stopTime                = models.TimeField(null = True)
     #contestProblems         = models.ForeignKey(Problem, default = None, on_delete = models.SET_NULL, null = True)
 
+    def get_remaining_time(self):
+        remainingTime = datetime.timedelta(0,0,0)
+        if not self.isRunning:
+            return remainingTime
+        else:
+            startTime           = datetime.timedelta(hours = self.startTime.hour, 
+                                                        minutes = self.startTime.minute, 
+                                                        seconds = self.startTime.second)
+            currentTime         = datetime.datetime.now().time()
+            currentTimedelta    = datetime.timedelta(hours = currentTime.hour, 
+                                                        minutes = currentTime.minute, 
+                                                        seconds = currentTime.second)
+            contestDuration     = self.contestDuration
+
+            remainingTime            = (startTime + contestDuration) - currentTimedelta
+            return remainingTime
     
+    def get_remaining_time_string(self):
+        if not self.isRunning:
+            return "Contest Not Running"
+        else:
+            timeLeft            = self.get_remaining_time()
+            hour                = timeLeft.seconds // 3600
+            minutes             = (timeLeft.seconds // 60) % 60
+            seconds             = timeLeft.seconds - hour * 3600 - minutes * 60
+            
+            hour = str(hour) if hour >= 10 else ("0" + str(hour))
+            minutes = str(minutes) if minutes >= 10 else ("0" + str(minutes))
+            seconds = str(seconds) if seconds >= 10 else ("0" + str(seconds))
+
+            time = hour + ":" + minutes +":"+ seconds
+            return time
+
     def get_absolute_url(self):
         return reverse("contests:contest-detail", kwargs = {"id": self.id})
 

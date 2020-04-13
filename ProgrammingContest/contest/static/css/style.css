@@ -1,29 +1,60 @@
+#container2{
+    text-align: center;
+    background-color:white;
+}
+#container2 th, #container2 td{
+    border: 1px solid black;
+    width: 160px;
+    height: 30px;
+}
+
+#container2{
+    text-align: center;
+    background-color:white;
+}
+
+#container2 table{
+    border: 1px solid black;
+    font-size: 16px;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#container2 td{
+    border: 1px solid black;
+    text-align: left;
+    padding: 10px;
+}
+
 form{
     color: orangered;
 }
 
 .container {
-    position: relative;
     border-radius: 5px;
     background-color:white;
-    padding: 50px 25px;
+    padding: 10px;
     text-align: center;
     font-size: 16px;
-    margin-top: auto;
 }
 
-table{
+.container table{
     border: 1px solid black;
-    font-size: 16px;
+    border-radius: 10px;
+    font-size: 20px;
     text-align: left;
     margin-left: auto;
     margin-right: auto;
     padding: 20px;
     border-spacing: 10px;
 }
-td{
+
+.container td{
     height: 40px;
 }
+
+
 #last{
     text-align:center;
 }

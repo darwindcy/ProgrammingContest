@@ -24,9 +24,17 @@ class Submission(models.Model):
         ('ungraded', 'UNGRADED'),
         ('inprocess', 'INPROCESS')
     ]
+    language_choices = [
+        ('java', 'JAVA'),
+        ('c++', 'C++'),
+        ('c', 'C'),
+        ('python', 'PYTHON'),
+        ('c#', 'C#')
+    ]
 
     submissionFile      = models.FileField(upload_to=get_upload_path, null = True, blank = True)
     submissionName      = models.CharField(max_length = 25, null = True)
+    submissionLanguage  = models.CharField(max_length = 6, choices = language_choices, default = language_choices[2][0])
     submissionTime      = models.TimeField(auto_now_add=True)
     submissionTeam      = models.ForeignKey(settings.AUTH_USER_MODEL, related_name = 'submittedBy', on_delete = models.SET_NULL, null = True, blank = True)
     from contests.models import Problem
@@ -58,20 +66,24 @@ class Submission(models.Model):
         submission_timedelta       = datetime.timedelta(hours = self.submissionTime.hour, 
                                                         minutes = self.submissionTime.minute, 
                                                         seconds = self.submissionTime.second)
-        contest_timedelta          = datetime.timedelta(hours = self.submissionProblem.contest.startTime.hour, 
-                                                        minutes = self.submissionProblem.contest.startTime.minute, 
-                                                        seconds = self.submissionProblem.contest.startTime.second)
-        timediff = submission_timedelta - contest_timedelta
-        time_minutes = timediff.total_seconds()/60
+        if self.submissionProblem:
 
-        time_minutes = int(time_minutes)
+            contest_timedelta          = datetime.timedelta(hours = self.submissionProblem.contest.startTime.hour, 
+                                                            minutes = self.submissionProblem.contest.startTime.minute, 
+                                                            seconds = self.submissionProblem.contest.startTime.second)
+            timediff = submission_timedelta - contest_timedelta
+            time_minutes = timediff.total_seconds()/60
 
-        if(self.submissionGrade.lower() != "pass"):
-            return 0
-        
-        count = self.totalSubmissionCount
+            time_minutes = int(time_minutes)
 
-        score = (count - 1) * 20 + time_minutes
+            if(self.submissionGrade.lower() != "pass"):
+                return 0
+            
+            count = self.totalSubmissionCount
+
+            score = (count - 1) * 20 + time_minutes
+        else:
+            score = 0
         
         return score
 

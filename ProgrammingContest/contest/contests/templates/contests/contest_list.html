@@ -5,8 +5,8 @@
 <div class = "container">
 <link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_lists.css' %}" />
 
+{% if request.user.userType == "administrator" %}
     <a href = '{{ get_absolute_url }}create/' id = "createnew"> Create New Contest</a>
-    <a href = '{{ get_absolute_url }}problems/create/' id = "createnew"> Create New Problem</a>
     <br><br>
     <table>
         <tr>
@@ -44,5 +44,47 @@
 </tr>
 {% endfor %}
 </table>
+{% elif request.user.userType == "grader" %}
+<table>
+    <tr>
+        <th>Contest Name</th>
+        <th>Submissions</th>
+        <th>Scoreboard</th>
+    </tr>
+    {% for instance in object_list %}
+    <tr>
+    <td>
+        <a href = '{{ instance.get_absolute_url }}' > 
+            {{ instance.contestName }}
+        </a>
+    </td>
+    <td><a href = '{{ instance.get_absolute_url }}submissions' > submissions </a></td>
+    <td><a href = '{{ instance.get_absolute_url }}scoreboard' > scoreboard </a></td>
+
+</tr>
+{% endfor %}
+</table>
+
+{% else %}
+<h2>You are part of the following contests</h2>
+<table>
+    <tr>
+        <th>Contest Name</th>
+        <th>Scoreboard</th>
+    </tr>
+    {% for instance in object_list %}
+    <tr>
+    <td>
+        <a href = '{{ instance.get_absolute_url }}' > 
+            {{ instance.contestName }}
+        </a>
+    </td>
+    <td><a href = '{{ instance.get_absolute_url }}scoreboard' > scoreboard </a></td>
+
+</tr>
+{% endfor %}
+</table>
+
+{% endif %}
 </div>
 {% endblock %}

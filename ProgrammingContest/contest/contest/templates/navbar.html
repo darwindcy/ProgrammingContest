@@ -12,16 +12,28 @@
             </li>
             <li><img src = "{% static 'logo/UElogo.jpg' %}" class = "logo1"/></li>
             <li><img src = "{% static 'logo/ACMlogo.png' %}" class = "logo"/></li>
-            <li><a href="{% url 'account:account-view' %}"> Homepage</a></li>
-            <li><a href = "#somewhere">Somewhere</a></li>
-            <li><a href = "#somewhere">Somewhere</a></li>
-            <li><a href="{% url 'login:login-page' %}"> login </a></li>
-            <li><a href="{% url 'contests:contest-list' %}"> contests </a> </li>
-            <li><a href="{% url 'users:user-list' %}"> users </a></li>
-            <li><a href="{% url 'oracle:posts-list' %}"> Oracle </a></li>
-            <li><a href="{% url 'submission:submission-list' %}"> Submissions </a></li>
+            <li class="{% ifequal request.path '/home/'%} active {% endifequal%}">
+                <a href="{% url 'home:homepage-view' %}"> Homepage</a>
+            </li>
+
+            <li class="{% ifequal request.path '/login/'%} active {% endifequal%}">
+                <a href="{% url 'login:login-page' %}"> Login </a>
+            </li>
+
+            <li class="{% if 'contests' in request.build_absolute_uri %} active {% endif%}">
+                <a href="{% url 'contests:contest-list' %}"> Contests </a>
+            </li>
+            <li class="{% if 'users' in request.build_absolute_uri %} active {% endif%}">
+                <a href="{% url 'users:user-list' %}"> Users </a>
+            </li>
+            <li class="{% ifequal request.path '/oracle/'%} active {% endifequal%}">
+                <a href="{% url 'oracle:posts-list' %}"> Oracle </a>
+            </li>
+
+            <li class="{% ifequal request.path '/submission/'%} active {% endifequal%}">
+                <a href="{% url 'submission:submission-list' %}"> Submissions </a>
+            </li>
             <li style = "float:right"><a href="{% url 'login:logout-page' %}"> Logout </a></li>
         </ul>
-        
     </div>
 </nav>

@@ -1,1 +1,59 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .samplemenu ul{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%w, -50%);
+        margin: 0;
+        padding:0;
+        display: flex;
+    }
+
+        .samplemenu ul li{
+            list-style: none;
+
+        }
+        .samplemenu ul li a{
+            position: relative;
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight:
+            bold;
+        }
+
+        .samplemenu ul li.active a{
+            background-color: black;
+        }
+
+    </style>
+</head>
+<body>
+    <div class = "samplemenu">
+        <ul>
+            <li class = "active"><a href = "#somewhere">Somewhere</a></li>
+            <li><a href = "#somewhere1">Somewhere</a></li>
+            <li><a href = "#somewhere2">Somewhere</a></li>
+            <li><a href = "#somewhere3">Somewhere</a></li>
+            <li><a href = "#somewhere4">Somewhere</a></li>
+            <li><a href = "#somewhere5">Somewhere</a></li>
+            <li><a href = "#somewhere6">Somewhere</a></li>
+            <li><a href = "#somewhere7">Somewhere</a></li>
+        </ul>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+        
+        <script type = "text/javascript">
+            $(document).on('click', 'ul li', function(){
+                $(this).addClass('active').siblings().removeClass('active')
+            })
+        </script>
+    </div>
+</body>
+</html>

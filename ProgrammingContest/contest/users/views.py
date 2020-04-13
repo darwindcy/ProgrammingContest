@@ -17,15 +17,16 @@ from .models import CustomUser
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from contest.decorators import class_view_decorator, admin_only_view, custom_login_required
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_only_view)
 class UserListView(ListView):
     template_name = 'users/user_list.html'
-    
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
     queryset = CustomUser.objects.all()
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_only_view)
 class UserDetailView(DetailView):
     template_name = 'users/user_detail.html'
     queryset = CustomUser.objects.all()
@@ -34,6 +35,8 @@ class UserDetailView(DetailView):
         id_ = self.kwargs.get("id")
         return get_object_or_404(CustomUser, id = id_)
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_only_view)
 class UserCreateView(CreateView):
     model = CustomUser
     template_name = "users/user_create.html"
@@ -55,6 +58,8 @@ class UserCreateView(CreateView):
 
         return super().form_valid(form)
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_only_view)
 class UserUpdateView(UpdateView):
     template_name = "users/user_update.html"
     form_class = UserUpdateForm
@@ -88,6 +93,8 @@ class UserUpdateView(UpdateView):
         print(form.cleaned_data)
         return super().form_valid(form)
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_only_view)
 class UserDeleteView(DeleteView):
     template_name = 'users/user_delete.html'
     #queryset = User.objects.all()

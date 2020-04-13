@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'login',
     'oracle',
     'home',
-    'account',
     'submission',
     'scoreboard',
 ]
@@ -56,6 +55,7 @@ LOGIN_REDIRECT_URL  = '/login/'
 MEDIA_ROOT          = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL           = '/media/'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

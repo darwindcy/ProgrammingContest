@@ -21,14 +21,16 @@ from django.conf.urls.static import static
 
 from users.views import random_view
 
+from home.views import HomePageView
+
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
+    path('', HomePageView.as_view()),
+
     path('scoreboard/', include('scoreboard.urls')),
 
     path('submission/', include('submission.urls')),
-
-    path('account/', include('account.urls')),
 
     path('home/', include('home.urls')),
     

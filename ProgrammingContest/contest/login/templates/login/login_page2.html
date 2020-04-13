@@ -2,8 +2,39 @@
 {% block content %}
 {% load static %}
 <link rel = "stylesheet" type = "text/css" href = "{% static 'css/style.css' %}" />
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+    $( "#container2" ).load(window.location.href + " #container2" );
+    function updateDiv()
+    { 
+        $( "#container2" ).load(window.location.href + " #container2" );
+    }
+    setInterval(updateDiv, 1000);
+</script>
+
+<div id="container2">
+    
+    {% if runningContests.count > 0 %}
+    <h2>Running Contests</h2>
+    <table>
+        <th>Contest Name</th>
+        <th>Time Left</th>
+    {% for item in runningContests %}
+    <tr>
+        <td>{{ item.contestName }}</td>
+        <td>{{ item.get_remaining_time_string }} </td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    
+    <h2>No Running Contests</h2>
+    {% endif %}
+    
+</div>
 
 <div class = "container">
+    <h2>Login</h2>
 <form action = '.' method = 'POST' > {% csrf_token %}
     <table>
         {{ form.as_table }} 

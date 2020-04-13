@@ -19,7 +19,6 @@
         <td><b>Force Download</b></td>
         <td><b>Graded Status</b></td>
         <td><b>Grade</b></td>
-        <td><b>Submissions</b></td>
     </tr>
 {% for instance in object_list %}
     <tr>
@@ -46,7 +45,6 @@
         <td>
         {{ instance.submissionGrade }}
         </td>
-        <td><a href = "{{ request.path }}{{ instance.submissionTeam.id }}">All submissions</a></td>
     </tr>
     
 {% endfor %}

@@ -16,3 +16,13 @@ table, th, td{
     border: 1px solid black;
     padding: 10px;
 }
+
+.pass{
+    background-color: lightgreen;
+}
+.fail{
+    background-color: rgb(243, 56, 56);
+}
+.ungraded{
+    background-color: lightgray;
+}

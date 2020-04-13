@@ -9,7 +9,6 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 class ProblemCreateForm(forms.ModelForm):
-    contest             = forms.ModelChoiceField(queryset = Contest.objects.all())
     problemName         = forms.CharField(label = "Problem Name")
     problemInformation  = forms.CharField(label = "Problem Information", widget = forms.Textarea)
     problemTests        = forms.CharField(label = "ProblemTests", widget = forms.Textarea)
@@ -17,7 +16,7 @@ class ProblemCreateForm(forms.ModelForm):
     class Meta:
         model = Problem
         fields = [
-            'contest',
+            
             'problemName',
             'problemInformation',
             'problemTests',

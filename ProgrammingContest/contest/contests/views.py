@@ -17,10 +17,30 @@ from .models import Contest, Problem
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from contest.decorators import class_view_decorator, admin_only_view, custom_login_required, admin_grader_only
+from django.contrib import messages
 
+import os, shutil
 import datetime
 from collections import OrderedDict
 
+@class_view_decorator(custom_login_required)
+class ContestProblemCreateView(CreateView):
+    model = Problem
+    template_name  = "contests/problem_create.html"
+    form_class = ProblemCreateForm
+    queryset = Problem.objects.all()
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        id_ = self.kwargs.get("id")
+        form.instance.contest = Contest.objects.get(id = id_)
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('contests:contest-list')
+
+@class_view_decorator(custom_login_required)
 class ContestScoreBoardView(ListView):
     template_name = "contests/contest_scoreboard.html"
 
@@ -56,6 +76,7 @@ class ContestScoreBoardView(ListView):
         context['contest']          = current_contest
         score_data = {}
         
+        print("---------------------------------------------Sorted Scores-------------------------------")
         for team in teams:
             score_data[team] = {}
             sum = 0
@@ -70,8 +91,9 @@ class ContestScoreBoardView(ListView):
             score_data[team]["sum"] = sum
             score_data[team]["correct"] = correct_submissions
         
+        print('score date', score_data)
         context['score_data'] = score_data
-        print("---------------------------------------------Sorted Scores-------------------------------")
+       
         
         od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["sum"], reverse=False))
         od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["correct"], reverse=True))
@@ -79,9 +101,18 @@ class ContestScoreBoardView(ListView):
         context['score_data'] = od
             
         print("---------------------------------------------Sorted Scores-------------------------------")
-
+        remainingTime = current_contest.get_remaining_time()
+        
+        if (remainingTime.seconds // 3600 > 0 or ((remainingTime.seconds // 60) % 60) >= 30 or (remainingTime.seconds == 0)): 
+            scoreboard_active = True
+        else:
+            print("time remaining", (remainingTime.seconds // 60) % 60)
+            scoreboard_active = False
+        context['active_status'] = scoreboard_active
         return context
 
+@class_view_decorator(custom_login_required)
+@class_view_decorator(admin_grader_only)
 class ContestSubmissionsListView(ListView):
     template_name = "contests/contest_submissions.html"
     
@@ -90,11 +121,38 @@ class ContestSubmissionsListView(ListView):
         contest_id       = self.kwargs.get("id")
         current_contest     = Contest.objects.get(id = contest_id)
         problem_list        = current_contest.contestproblems.all()
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        latestSubmissions   = []
+
+        for eachuser in current_contest.contestants.all():
+            submissions = submissionList.filter(submissionTeam = eachuser)
+            for each_problem in problem_list:
+                all_submissions = submissions.filter(submissionProblem = each_problem)
+                if all_submissions.last():
+                    latestSubmissions.append(all_submissions.last())
+            print("submissions of ", eachuser, submissions)
+            print("latest submission", submissions.last())
+
+        return latestSubmissions
+        
+class ContestSubmissionsForTeamView(ListView):
+    template_name = "contests/contest_submissions_for_team.html"
+    
+    def get_queryset(self):
+        from submission.models import Submission
+        contest_id       = self.kwargs.get("id")
+        team_id          = self.kwargs.get("team_id")
+        current_contest     = Contest.objects.get(id = contest_id)
+        problem_list        = current_contest.contestproblems.all()
 
         submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        from users.models import CustomUser
+        print("selected user", CustomUser.objects.get(id = team_id))
+        teamSubmissionList  = submissionList.filter(submissionTeam = CustomUser.objects.get(id = team_id))
+        print("team submission list", teamSubmissionList)
+        return teamSubmissionList
 
-        return submissionList
-
+@class_view_decorator(custom_login_required)
 class ProblemDetailView(DetailView):
     template_name = "contests/contest_problem_detail.html"
 
@@ -129,47 +187,51 @@ class ProblemDetailView(DetailView):
         
         return context
 
+@class_view_decorator(custom_login_required)
 class ContestListView(ListView):
     template_name = "contests/contest_list.html"
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-    queryset = Contest.objects.all()
+    def get_queryset(self):
+        if(self.request.user.userType.lower() == "team"):
+            return Contest.objects.all().filter(contestants = self.request.user)
+        else:
+            return Contest.objects.all()
+            
 
-class ContestStartView(DetailView):
-    queryset = Contest.objects.all()
-    #fields = ['isRunning']
-    template_name = "contests/contest_detail.html"
 
-    def get_object(self):
+@class_view_decorator(custom_login_required)
+class ContestStartView(TemplateView):
+    def get(self, request, *args, **kwargs):
         id_ = self.kwargs.get("id")
-        Contest.objects.filter(id = id_).update(isRunning = True)
-        print("current Time")
-        
-        currentTime = datetime.datetime.now().time()
-        print(currentTime)
-        Contest.objects.filter(id = id_).update(startTime = currentTime)
-        return get_object_or_404(Contest, id = id_)      
-    
-    # def form_valid(self, form):
-    #     print(form.cleaned_data)
-    #     form.instance.isRunning = True
-    #     return super().form_valid(form)
+        if Contest.objects.get(id = id_).isRunning == False:
+            Contest.objects.filter(id = id_).update(isRunning = True)
+            print("current Time")
+            
+            currentTime = datetime.datetime.now().time()
+            print(currentTime)
+            Contest.objects.filter(id = id_).update(startTime = currentTime)
+            messages.success(request, 'Contest Successfully Started')
+        else:
+            messages.success(request, 'Contest already running, Cannot start again')
+        return ContestListView.as_view()(self.request)    
 
-class ContestStopView(DetailView):
-    queryset = Contest.objects.all()
-    template_name = "contests/contest_detail.html"
-
-    def get_object(self):
+@class_view_decorator(custom_login_required)
+class ContestStopView(TemplateView):
+    def get(self, request, *args, **kwargs):
         id_ = self.kwargs.get("id")
-        Contest.objects.filter(id = id_).update(isRunning = False)
-        print("stop time current time ")
-        currentTime = datetime.datetime.now().time()
-        print(currentTime)
-        Contest.objects.filter(id = id_).update(stopTime = currentTime)
-        return ContestDetailView
+        if Contest.objects.get(id = id_).isRunning == True:
+            Contest.objects.filter(id = id_).update(isRunning = False)
+            print("stop time current time ")
 
+            currentTime = datetime.datetime.now().time()
+            print(currentTime)
+            Contest.objects.filter(id = id_).update(stopTime = currentTime)
+            messages.success(request, 'Contest Successfully Stopped')
+        else:
+            messages.success(request, 'Contest already stopped')
+        return ContestListView.as_view()(self.request)    
+
+@class_view_decorator(custom_login_required)
 class ContestDetailView(DetailView):
     template_name = 'contests/contest_detail.html'
     queryset = Contest.objects.all()
@@ -178,6 +240,7 @@ class ContestDetailView(DetailView):
         id_ = self.kwargs.get("id")
         return get_object_or_404(Contest, id = id_)
 
+@class_view_decorator(custom_login_required)
 class ContestDetailTeamView(DetailView):
     template_name = 'contests/contest_team_detail.html'
     queryset      = Contest.objects.all()
@@ -186,30 +249,33 @@ class ContestDetailTeamView(DetailView):
         id_ = self.kwargs.get("id")
         return get_object_or_404(Contest, id = id_)
 
+@class_view_decorator(custom_login_required)
 class ContestDeleteView(DeleteView):
     template_name = 'contests/contest_delete.html'
     #queryset = User.objects.all()
 
     def get_object(self):
         id_ = self.kwargs.get("id")
+        current_contest = Contest.objects.get(id = id_)
+        problem_list        = current_contest.contestproblems.all()
+
+        from submission.models import Submission
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        for each in submissionList:
+            each.delete()
+        from django.conf import settings
+        media_root = settings.MEDIA_ROOT
+        path = os.path.join(media_root,"submissions", current_contest.contestName)
+       
+        if os.path.isdir(path):
+            shutil.rmtree(path)
         return get_object_or_404(Contest, id = id_)
+        
     
     def get_success_url(self):
         return reverse('contests:contest-list')
 
-class ProblemCreateView(CreateView):
-    model = Problem
-    template_name  = "contests/problem_create.html"
-    form_class = ProblemCreateForm
-    queryset = Problem.objects.all()
-
-    def form_valid(self, form):
-        print(form.cleaned_data)
-        return super().form_valid(form)
-    
-    def get_success_url(self):
-        return reverse('contests:contest-list')
-
+@class_view_decorator(custom_login_required)
 class ContestCreateView(CreateView):
     model = Contest
     template_name = "contests/contest_create.html"
@@ -233,6 +299,7 @@ class ContestCreateView(CreateView):
 
         return super().form_valid(form)
 
+@class_view_decorator(custom_login_required)
 class ContestUpdateView(UpdateView):
     template_name = "contests/contest_update.html"
     form_class = ContestUpdateForm

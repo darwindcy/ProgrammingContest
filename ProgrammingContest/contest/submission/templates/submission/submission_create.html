@@ -2,14 +2,17 @@
 
 {% block content %}
 
+{% load static %}
+<div class = "newcontainer">
+<link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_createnew.css' %}" />
 
 <h1>Create Submission</h1>
 
 <form action = '.' method = 'POST' enctype="multipart/form-data"> {% csrf_token %}
-    {{ form.as_p }}
-
+    <table>
+    {{ form.as_table }}
+    </table>
     <input type = 'submit' value = 'Submit Solution' />
 </form>
-
-
+</div>
 {% endblock %}
