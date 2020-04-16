@@ -7,7 +7,7 @@ import datetime
 
 class Contest(models.Model):
     # Basic Detail
-    contestName             = models.CharField(max_length = 20, unique = True)
+    contestName             = models.CharField(max_length = 50, unique = True)
     contestDate             = models.DateField()
     contestants             = models.ManyToManyField('users.CustomUser', blank = True)
 
