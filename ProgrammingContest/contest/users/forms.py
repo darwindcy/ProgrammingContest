@@ -11,6 +11,7 @@ user_choices  = [
 ]
 
 class UserModelForm(forms.ModelForm):
+    userNameDetail = forms.CharField(label = "Name", required = False)
     password = forms.CharField(label = "Password", widget = forms.PasswordInput)
     userType = forms.ChoiceField(label = "User Type", choices = user_choices, required = True)
 
@@ -19,7 +20,7 @@ class UserModelForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('userName', 'password', 'userType', 'participatingIn')
+        fields = ('userNameDetail', 'userName', 'password', 'userType', 'participatingIn')
     
     def clean_userName(self):
         userName = self.cleaned_data.get('userName')

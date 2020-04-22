@@ -4,7 +4,17 @@
 
 {% load static %}
 <link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_scoreboard.css' %}" />
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+    $( "#scoreboardcontainer" ).load(window.location.href + " #scoreboardcontainer" );
+    function updateDiv()
+    { 
+        $( "#scoreboardcontainer" ).load(window.location.href + " #scoreboardcontainer" );
+    }
+    setInterval(updateDiv, 10000);
+</script>
 
+<div id = "scoreboardcontainer">
 <div class = "scoreboardcontainer">
 
 <h1>Contest Scoreboard</h1>
@@ -16,16 +26,17 @@
 
 <table>
     <tr>
-        <td>TeamName<br>Problems</td>
+        <td><b>TeamName</b></td>
         {% for problem in problem_list %}
-            <td>{{ team }} {{ problem }}</td>
+            <td><b>{{ problem }}</b></td>
         {% endfor %}
-        <td>Total Score</td>
+        <td><b>Total Score</b></td>
     </tr>
-    {%for team in team_list %}
+    {% for each_user, data in score_data.items %}
     <tr>
-        <td> {{ team.userName }} </td>
-        {% with score_data|get_item:team as team_submissions %}
+        <td><b> {{ each_user.userName }} </b></td>
+        
+        {% with score_data|get_item:each_user as team_submissions %}
         
         {% for problem in problem_list %}
         {% with team_submissions|get_item:problem as eachSubmission %}
@@ -37,7 +48,8 @@
             {% endwith %}
         
         {% endfor %}
-        <td>Total Score: {{ team_submissions|get_item:"sum" }}</td>
+        <td><b>Correct Submissions: </b>{{ team_submissions|get_item:"correct" }}<br>
+        <b>Total Score: </b>{{ team_submissions|get_item:"sum" }}</td>
 
         {% endwith %}
     </tr>
@@ -45,5 +57,5 @@
 </table>
 {% endif %}
 </div>
-
+</div>
 {% endblock %}

@@ -32,10 +32,11 @@ class Submission(models.Model):
         ('c#', 'C#')
     ]
 
-    submissionFile      = models.FileField(upload_to=get_upload_path, null = True, blank = True)
+    submissionFile      = models.FileField(upload_to=get_upload_path, null = False, blank = False)
     submissionName      = models.CharField(max_length = 25, null = True)
     submissionLanguage  = models.CharField(max_length = 6, choices = language_choices, default = language_choices[2][0])
     submissionTime      = models.TimeField(auto_now_add=True)
+    subTouchTime        = models.DateTimeField(auto_now=True)
     submissionTeam      = models.ForeignKey(settings.AUTH_USER_MODEL, related_name = 'submittedBy', on_delete = models.SET_NULL, null = True, blank = True)
     from contests.models import Problem
     submissionProblem   = models.ForeignKey(Problem, related_name = 'associatedProblem',on_delete = models.SET_NULL, null = True, blank = True)
@@ -44,9 +45,13 @@ class Submission(models.Model):
 
     objects = CustomManager()
 
+
     def delete(self, using = None, keep_parents = False):
-        if self.submissionFile.storage.exists(self.submissionFile.name):
-            self.submissionFile.storage.delete(self.submissionFile.name)    
+        try:
+            if self.submissionFile.storage.exists(self.submissionFile.name):
+                self.submissionFile.storage.delete(self.submissionFile.name) 
+        except:
+            print("Error while deleting File")
 
         super().delete()
 

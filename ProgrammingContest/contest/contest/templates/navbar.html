@@ -16,10 +16,6 @@
                 <a href="{% url 'home:homepage-view' %}"> Homepage</a>
             </li>
 
-            <li class="{% ifequal request.path '/login/'%} active {% endifequal%}">
-                <a href="{% url 'login:login-page' %}"> Login </a>
-            </li>
-
             <li class="{% if 'contests' in request.build_absolute_uri %} active {% endif%}">
                 <a href="{% url 'contests:contest-list' %}"> Contests </a>
             </li>
@@ -33,7 +29,12 @@
             <li class="{% ifequal request.path '/submission/'%} active {% endifequal%}">
                 <a href="{% url 'submission:submission-list' %}"> Submissions </a>
             </li>
+
+
             <li style = "float:right"><a href="{% url 'login:logout-page' %}"> Logout </a></li>
+            <li class="{% ifequal request.path '/login/'%} active {% endifequal%}"  style = "float:right">
+                <a href="{% url 'login:login-page' %}"> Login </a>
+            </li>
         </ul>
     </div>
 </nav>

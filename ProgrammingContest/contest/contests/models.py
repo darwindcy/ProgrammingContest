@@ -16,6 +16,8 @@ class Contest(models.Model):
     contestDuration         = models.DurationField(default = datetime.timedelta(days = 0, seconds=7200))
 
     isRunning               = models.BooleanField(default = False)
+    isPaused                = models.BooleanField(default = False)
+    pauseTime               = models.TimeField(null = True)
     startTime               = models.TimeField(null = True)
     stopTime                = models.TimeField(null = True)
     #contestProblems         = models.ForeignKey(Problem, default = None, on_delete = models.SET_NULL, null = True)

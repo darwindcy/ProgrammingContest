@@ -15,6 +15,7 @@ from .views import (
     ContestScoreBoardView,
     ContestProblemCreateView,
     ContestSubmissionsForTeamView,
+    ContestPauseView
 )
 
 from submission.views import SubmissionCreateView
@@ -29,6 +30,7 @@ urlpatterns = [
     path('<int:id>/update/', ContestUpdateView.as_view(), name = 'contest-update'),
     path('<int:id>/start/', ContestStartView.as_view(), name = 'contest-start'),
     path('<int:id>/stop/', ContestStopView.as_view(), name = 'contest-stop'),
+    path('<int:id>/pause/', ContestPauseView.as_view(), name = 'contest-pause'),
     path('<int:id>/problem/<int:problem_id>/', ProblemDetailView.as_view(), name = 'problem-detail'),
     path('<int:id>/submissions/', ContestSubmissionsListView.as_view(), name = 'contest-submissions'),
     path('<int:id>/problem/<int:problem_id>/submit/', SubmissionCreateView.as_view(), name = 'contest-submission-create'),

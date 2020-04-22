@@ -2,54 +2,61 @@
 
 {% block content %}
 {% load static %}
-<div class = "postscontainer">
+
 <link rel = "stylesheet" type = "text/css" href = "{% static 'css/style_oracle.css' %}" />
 
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+    $( "#postscontainer" ).load(window.location.href + " #postscontainer" );
+    function updateDiv()
+    { 
+        $( "#postscontainer" ).load(window.location.href + " #postscontainer" );
+    }
+    setInterval(updateDiv, 10000);
+</script>
+
+<div id = "postscontainer">
+<div class = "postscontainer">
 <a href = '{{ instance.get_absolute_url }}create/' id = "createnew"> Create New Post</a>
 <br><br>
+
 <table>
 {% for instance in object_list %}
     <tr>
-        <td>
-    <ul class = "item">
-        <li>
+    <td>
+
     <b>Posted By:</b>
     {% if instance.postUser.userName != None and instance.postUser.userName != " " %}
         {{ instance.postUser }}
     {% else %}
         User Name not available
     {% endif %}
-        </li>
-
-        <li><b>
-    Post Question: </b>{{ instance.postQuestion }}
-    </li>
-
-
+        <br>
+    <b>Post Question: </b>{{ instance.postQuestion }}
+    <br>
     {% if instance.postAnswer != None and instance.postAnswer != "" %}
-        <li><b>Answered By: {{ instance.postAnswerer }}</b></li>
-        <li><b>Answer: </b>{{ instance.postAnswer }}</li>
+        <b>Answered By: {{ instance.postAnswerer }}</b>
+        <br>
+        <b>Answer: </b>{{ instance.postAnswer }}
     {% else %}
-        <li>Not Answered </li>
+        <b>Not Answered</b>
     {% endif %}
-    </li>
-    
-    <li>
+    <br>
     <a href = '{{ instance.get_absolute_url }}'> Detail </a>
-
+    
     {% if request.user.userType == "administrator" %}
 
     <a href = '{{ instance.get_absolute_url }}answer/'> Answer </a>
 
     <a href = '{{ instance.get_absolute_url }}delete/'> Delete </a>
-    </li>
+
     
     {% endif %}
-    </li>
-    </ul>
+
     </td>
     </tr>
 {% endfor %}
 </table>
+</div>
 </div>
 {% endblock %}

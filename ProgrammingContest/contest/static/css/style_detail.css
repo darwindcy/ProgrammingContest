@@ -5,6 +5,9 @@
     margin-top: 20px;
     padding: 20px;
 }
+.detailcontainer th{
+    text-align: center;
+}
 
 .pdetailcontainer{
     position: relative;

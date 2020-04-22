@@ -8,7 +8,8 @@ from django.views.generic import(
     CreateView, 
     ListView, 
     UpdateView,
-    DetailView
+    DetailView,
+    RedirectView
 )
 
 from .models import Submission
@@ -32,16 +33,15 @@ class SubmissionListView(ListView):
 
 @class_view_decorator(custom_login_required)
 @class_view_decorator(admin_grader_only)
-class SubmissionDownloadView(DetailView):
+class SubmissionDownloadView(RedirectView):
     template_name = "submission/submission_download.html"
-    queryset = Submission.objects.all()
-    
-    def get_object(self):
+    def get_redirect_url(self, *args, **kwargs):
         id_ = self.kwargs.get("id")
+        Submission.objects.filter(id = id_).update(submissionGrade = "inprocess")
         obj = Submission.objects.get(id = id_)
 
-        print(obj.submissionGrade)
-        return obj
+        return obj.submissionFile.url
+
 
 @class_view_decorator(custom_login_required)
 @class_view_decorator(admin_grader_only)

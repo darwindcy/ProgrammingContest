@@ -75,23 +75,28 @@ class ContestScoreBoardView(ListView):
         context['team_list']        = teams
         context['contest']          = current_contest
         score_data = {}
-        
-        print("---------------------------------------------Sorted Scores-------------------------------")
+
         for team in teams:
             score_data[team] = {}
             sum = 0
             correct_submissions = 0
             for problem in problem_list:
-                for each in submissionList.filter(submissionTeam = team, submissionProblem = problem):
-                    if each.submissionGrade == "pass":
+                submissions_of_problem_for_team = submissionList.filter(submissionTeam = team, submissionProblem = problem)
+                if submissions_of_problem_for_team.count() > 0:
+                    #print("sub list", submissions_of_problem_for_team)
+                    #print("sub list", submissions_of_problem_for_team.order_by('-subTouchTime'))
+                    
+                    main_submission = submissions_of_problem_for_team.order_by('-subTouchTime').first()
+                    print("Main Submission", main_submission)
+                    if main_submission.submissionGrade == "pass":
                         correct_submissions += 1
-                    score_data[team][problem] = each
-                    sum += each.get_submission_score()
+                    score_data[team][problem] = main_submission
+                    sum += main_submission.get_submission_score()
                 
             score_data[team]["sum"] = sum
             score_data[team]["correct"] = correct_submissions
         
-        print('score date', score_data)
+        
         context['score_data'] = score_data
        
         
@@ -99,14 +104,12 @@ class ContestScoreBoardView(ListView):
         od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["correct"], reverse=True))
 
         context['score_data'] = od
-            
-        print("---------------------------------------------Sorted Scores-------------------------------")
+
         remainingTime = current_contest.get_remaining_time()
         
         if (remainingTime.seconds // 3600 > 0 or ((remainingTime.seconds // 60) % 60) >= 30 or (remainingTime.seconds == 0)): 
             scoreboard_active = True
         else:
-            print("time remaining", (remainingTime.seconds // 60) % 60)
             scoreboard_active = False
         context['active_status'] = scoreboard_active
         return context
@@ -128,13 +131,13 @@ class ContestSubmissionsListView(ListView):
             submissions = submissionList.filter(submissionTeam = eachuser)
             for each_problem in problem_list:
                 all_submissions = submissions.filter(submissionProblem = each_problem)
-                if all_submissions.last():
-                    latestSubmissions.append(all_submissions.last())
-            print("submissions of ", eachuser, submissions)
-            print("latest submission", submissions.last())
+                if all_submissions.count() > 0:
+                    main_submission = all_submissions.order_by('-subTouchTime').first()
+                    latestSubmissions.append(main_submission)
 
         return latestSubmissions
-        
+
+@class_view_decorator(custom_login_required)
 class ContestSubmissionsForTeamView(ListView):
     template_name = "contests/contest_submissions_for_team.html"
     
@@ -198,34 +201,54 @@ class ContestListView(ListView):
             return Contest.objects.all()
             
 
-
 @class_view_decorator(custom_login_required)
 class ContestStartView(TemplateView):
     def get(self, request, *args, **kwargs):
         id_ = self.kwargs.get("id")
         if Contest.objects.get(id = id_).isRunning == False:
+            if(Contest.objects.get(id = id_).isPaused == True):  
+                messages.success(request, 'Contest Resumed')
+            else:
+                messages.success(request, 'Contest Successfully Started')
             Contest.objects.filter(id = id_).update(isRunning = True)
-            print("current Time")
-            
             currentTime = datetime.datetime.now().time()
-            print(currentTime)
             Contest.objects.filter(id = id_).update(startTime = currentTime)
-            messages.success(request, 'Contest Successfully Started')
         else:
             messages.success(request, 'Contest already running, Cannot start again')
         return ContestListView.as_view()(self.request)    
 
 @class_view_decorator(custom_login_required)
-class ContestStopView(TemplateView):
+class ContestPauseView(TemplateView):
     def get(self, request, *args, **kwargs):
         id_ = self.kwargs.get("id")
         if Contest.objects.get(id = id_).isRunning == True:
+
+            print('Time remaining', Contest.objects.get(id = id_).get_remaining_time())
+            Contest.objects.filter(id = id_).update(contestDuration = Contest.objects.get(id = id_).get_remaining_time())
+
             Contest.objects.filter(id = id_).update(isRunning = False)
-            print("stop time current time ")
+            Contest.objects.filter(id = id_).update(isPaused = True)
+            messages.success(request, 'Contest Successfully Paused')
+        else:
+            messages.success(request, 'Contest not running')
+        return ContestListView.as_view()(self.request)
+
+@class_view_decorator(custom_login_required)
+class ContestStopView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        id_ = self.kwargs.get("id")
+        current_contest = Contest.objects.get(id = id_)
+
+        if current_contest.isRunning == True or current_contest.isPaused:
+            Contest.objects.filter(id = id_).update(isRunning = False)
+            Contest.objects.filter(id = id_).update(isPaused = False)
 
             currentTime = datetime.datetime.now().time()
-            print(currentTime)
+            
             Contest.objects.filter(id = id_).update(stopTime = currentTime)
+            Contest.objects.filter(id = id_).update(pauseTime = None)
+            Contest.objects.filter(id = id_).update(contestDuration = datetime.timedelta(seconds = (
+                                                    current_contest.contestHours*60 + current_contest.contestMinutes)*60))
             messages.success(request, 'Contest Successfully Stopped')
         else:
             messages.success(request, 'Contest already stopped')
@@ -240,14 +263,6 @@ class ContestDetailView(DetailView):
         id_ = self.kwargs.get("id")
         return get_object_or_404(Contest, id = id_)
 
-@class_view_decorator(custom_login_required)
-class ContestDetailTeamView(DetailView):
-    template_name = 'contests/contest_team_detail.html'
-    queryset      = Contest.objects.all()
-
-    def get_object(self):
-        id_ = self.kwargs.get("id")
-        return get_object_or_404(Contest, id = id_)
 
 @class_view_decorator(custom_login_required)
 class ContestDeleteView(DeleteView):
@@ -268,7 +283,7 @@ class ContestDeleteView(DeleteView):
         path = os.path.join(media_root,"submissions", current_contest.contestName)
        
         if os.path.isdir(path):
-            shutil.rmtree(path)
+            shutil.rmtree(path, ignore_errors=True)
         return get_object_or_404(Contest, id = id_)
         
     

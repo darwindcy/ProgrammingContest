@@ -59,6 +59,7 @@ class MyAccountManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser):
     userName        = models.CharField(max_length = 30, unique = True)
+    userNameDetail  = models.CharField(max_length = 50, null = True, blank = True)
     userType        = models.CharField(max_length=20, 
                                     choices = user_choices, 
                                     default = user_choices[1])

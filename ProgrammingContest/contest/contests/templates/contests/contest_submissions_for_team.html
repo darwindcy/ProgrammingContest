@@ -29,7 +29,7 @@
             {% if instance.submissionGrade == "ungraded" %}
                 <a href = "{{ instance.submissionFile.url }}">download</a>
             {% endif %}
-        {% endif %}
+        
         </td>
         <td>{{ instance.submissionLanguage|upper }}</td>
         <td><a href = "{{ instance.confirm_download_url }}"> Download </a></td>
@@ -45,6 +45,7 @@
         <td>
         {{ instance.submissionGrade }}
         </td>
+        {% endif %}
     </tr>
     
 {% endfor %}

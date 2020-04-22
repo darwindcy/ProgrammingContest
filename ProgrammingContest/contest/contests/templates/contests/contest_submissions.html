@@ -33,8 +33,12 @@
         {% endif %}
         </td>
         <td>{{ instance.submissionLanguage|upper }}</td>
-        <td><a href = "{{ instance.confirm_download_url }}"> Download </a></td>
 
+        {% if instance.submissionGrade == "inprocess" %}
+            <td>Grading In Process</td>
+        {% else %}
+            <td><a href = "{{ instance.confirm_download_url }}"> Download File </a></td>
+        {% endif %}
         <td><a href = "{{ instance.submissionFile.url }}">Force Download </a></td>
         <td>
         {% if instance.submissionGrade == "pass" or instance.submissionGrade == "fail" %}

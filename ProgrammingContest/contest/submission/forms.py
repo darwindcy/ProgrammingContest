@@ -19,7 +19,7 @@ language_choices = [
 
 class SubmissionCreateForm(forms.ModelForm):
     submissionLanguage  = forms.ChoiceField(label = "Programming Language", choices = language_choices, initial = "Select ", required = True)
-    submissionFile      = forms.FileField(label = "Select a file", required = False)
+    submissionFile      = forms.FileField(label = "Select a file", required = True)
 
     class Meta:
         model = Submission

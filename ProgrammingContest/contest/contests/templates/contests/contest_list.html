@@ -12,6 +12,7 @@
         <tr>
             <th>Contest Name</th>
             <th>Start</th>
+            <th>Pause</th>
             <th>Stop</th>
             <th>Status</th>
             <th>Update</th>
@@ -28,12 +29,17 @@
         </td>
  
         <td><a href = '{{ instance.get_absolute_url }}start' > start </a></td>
+        <td><a href = '{{ instance.get_absolute_url }}pause'> pause </a></td>
         <td><a href = '{{ instance.get_absolute_url }}stop' > stop </a></td>
         
         {% if instance.isRunning == True %} 
         <td>Running</td>
         {% else %}
-        <td>Stopped</td>
+            {% if instance.isPaused == True %} 
+                <td>Paused</td>
+            {% else %}
+                <td>Stopped</td>
+            {% endif %}
         {% endif %}
 
         <td><a href = '{{ instance.get_absolute_url }}update' > update </a></td>
