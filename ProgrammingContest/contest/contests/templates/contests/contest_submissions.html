@@ -7,6 +7,7 @@
 <div class = "scoreboardcontainer">
 
 <h1>Latest Submissions for contest</h1>
+<h3><a href = "{{ request.path }}delete"> Delete all submissions</a></h3>
 
 <table>
 
@@ -25,13 +26,7 @@
     <tr>
         <td> {{ instance.submissionTeam.userName }} </td>
         <td> {{ instance.submissionProblem.problemName }} </td>
-        <td> {{ instance.submissionName }} - 
-        {% if instance.submissionFile %}
-            {% if instance.submissionGrade == "ungraded" %}
-                <a href = "{{ instance.submissionFile.url }}">download</a>
-            {% endif %}
-        {% endif %}
-        </td>
+        <td> {{ instance.submissionName }}</td>
         <td>{{ instance.submissionLanguage|upper }}</td>
 
         {% if instance.submissionGrade == "inprocess" %}

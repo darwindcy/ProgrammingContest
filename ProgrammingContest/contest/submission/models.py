@@ -9,7 +9,7 @@ from django.urls import reverse
 import datetime
 
 def get_upload_path(instance, filename):
-    newname = "sub_for_id_" + str(instance.submissionProblem.id) + ".txt"
+    newname = "sub_for_id_" + str(instance.submissionProblem.id) + "." + instance.submissionLanguage
     return 'submissions/{0}/{1}/{2}'.format(instance.submissionProblem.contest.contestName, instance.submissionTeam.userName, newname)
 
 class CustomManager(models.Manager):
@@ -29,13 +29,13 @@ class Submission(models.Model):
         ('c++', 'C++'),
         ('c', 'C'),
         ('python', 'PYTHON'),
-        ('c#', 'C#')
     ]
 
     submissionFile      = models.FileField(upload_to=get_upload_path, null = False, blank = False)
     submissionName      = models.CharField(max_length = 25, null = True)
     submissionLanguage  = models.CharField(max_length = 6, choices = language_choices, default = language_choices[2][0])
-    submissionTime      = models.TimeField(auto_now_add=True)
+
+    submissionTime      = models.DateTimeField(auto_now_add=True)
     subTouchTime        = models.DateTimeField(auto_now=True)
     submissionTeam      = models.ForeignKey(settings.AUTH_USER_MODEL, related_name = 'submittedBy', on_delete = models.SET_NULL, null = True, blank = True)
     from contests.models import Problem
@@ -68,19 +68,17 @@ class Submission(models.Model):
         return reverse("submission:submission-grade", kwargs = {"id": self.id})
 
     def get_submission_score(self):
-        submission_timedelta       = datetime.timedelta(hours = self.submissionTime.hour, 
-                                                        minutes = self.submissionTime.minute, 
-                                                        seconds = self.submissionTime.second)
-        if self.submissionProblem:
 
-            contest_timedelta          = datetime.timedelta(hours = self.submissionProblem.contest.startTime.hour, 
-                                                            minutes = self.submissionProblem.contest.startTime.minute, 
-                                                            seconds = self.submissionProblem.contest.startTime.second)
-            timediff = submission_timedelta - contest_timedelta
-            time_minutes = timediff.total_seconds()/60
+        if self.submissionProblem and self.submissionTime:
+            #timediff = submission_timedelta - contest_timedelta
+            timediff        = self.submissionTime - self.submissionProblem.contest.startTime
+            duration_in_s   = timediff.total_seconds()
 
-            time_minutes = int(time_minutes)
-
+            time_minutes = divmod(duration_in_s, 60)[0]
+            print("sub time", self.submissionTime)
+            print("start time", self.submissionProblem.contest.startTime)
+            print("Time seconds", duration_in_s)
+            print("Time minutes", time_minutes)
             if(self.submissionGrade.lower() != "pass"):
                 return 0
             
@@ -91,10 +89,3 @@ class Submission(models.Model):
             score = 0
         
         return score
-
-
-    # def delete(self, *args, **kwargs):
-    #     if os.path.isfile(self.submissionFile.path):
-    #         os.remove(self.submissionFile.path)
-        
-    #     super().delete()

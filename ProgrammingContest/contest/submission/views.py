@@ -73,9 +73,7 @@ class SubmissionCreateView(CreateView):
 
     def form_valid(self, form):
         id_problem = self.kwargs.get('problem_id')
-        print(id_problem)
         form.instance.submissionName        =  form.instance.submissionFile.name
-        form.instance.submissionTime        =  datetime.datetime.now().time()
         form.instance.submissionTeam        =  self.request.user
         form.instance.submissionGrade       =  "ungraded"
         from contests.models import Problem
@@ -85,9 +83,9 @@ class SubmissionCreateView(CreateView):
         form.instance.totalSubmissionCount = does_exist(self)
         print("Total Submissions = " + repr(form.instance.totalSubmissionCount))
 
-        print(form.instance.submissionTime)
-        print(form.instance.submissionFile.name)
-        print(form.instance.submissionProblem.problemName)
+        print("sub time", form.instance.submissionTime)
+        print("sub file", form.instance.submissionFile.name)
+        print("sub prob", form.instance.submissionProblem.problemName)
 
         qs = Submission.objects.filter(submissionTeam = self.request.user, submissionProblem = Problem.objects.get(id = id_problem))
         if qs.exists():

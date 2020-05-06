@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 from django.urls import reverse
 
@@ -32,13 +32,14 @@ class ContestProblemCreateView(CreateView):
     queryset = Problem.objects.all()
 
     def form_valid(self, form):
-        print(form.cleaned_data)
         id_ = self.kwargs.get("id")
         form.instance.contest = Contest.objects.get(id = id_)
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse('contests:contest-list')
+        id_ = self.kwargs.get("id")
+        
+        return (Contest.objects.get(id = id_).get_absolute_url())
 
 @class_view_decorator(custom_login_required)
 class ContestScoreBoardView(ListView):
@@ -96,7 +97,7 @@ class ContestScoreBoardView(ListView):
             score_data[team]["sum"] = sum
             score_data[team]["correct"] = correct_submissions
         
-        
+        print(score_data)
         context['score_data'] = score_data
        
         
@@ -107,7 +108,7 @@ class ContestScoreBoardView(ListView):
 
         remainingTime = current_contest.get_remaining_time()
         
-        if (remainingTime.seconds // 3600 > 0 or ((remainingTime.seconds // 60) % 60) >= 30 or (remainingTime.seconds == 0)): 
+        if (remainingTime // 3600 > 0 or ((remainingTime // 60) % 60) >= 30 or (remainingTime == 0)): 
             scoreboard_active = True
         else:
             scoreboard_active = False
@@ -136,6 +137,52 @@ class ContestSubmissionsListView(ListView):
                     latestSubmissions.append(main_submission)
 
         return latestSubmissions
+
+def ContestSubmissionDeleteView(request, id, *args, **kwargs):
+    if request.method == "POST":
+        current_contest = Contest.objects.get(id = id)
+        problem_list        = current_contest.contestproblems.all()
+
+        from submission.models import Submission
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        for each in submissionList:
+            each.delete()
+        from django.conf import settings
+        media_root = settings.MEDIA_ROOT
+        path = os.path.join(media_root,"submissions", current_contest.contestName)
+       
+        if os.path.isdir(path):
+            shutil.rmtree(path, ignore_errors=True)
+        return redirect('../../../')
+
+    current_contest = Contest.objects.get(id = id)
+    context = {
+        "object":current_contest
+    }
+    return render(request, "contests/contest_submissions_delete.html", context)
+
+class ContestSubmissionsDelete(ListView):
+    template_name = 'contests/contest_submissions_delete.html'
+
+    def get_queryset(self):
+        id_ = self.kwargs.get("id")
+        current_contest = Contest.objects.get(id = id_)
+        problem_list        = current_contest.contestproblems.all()
+
+        from submission.models import Submission
+        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
+        for each in submissionList:
+            each.delete()
+        from django.conf import settings
+        media_root = settings.MEDIA_ROOT
+        path = os.path.join(media_root,"submissions", current_contest.contestName)
+       
+        if os.path.isdir(path):
+            shutil.rmtree(path, ignore_errors=True)
+        return submissionList
+
+    def get_success_url(self):
+        return reverse('contests:contest-list')
 
 @class_view_decorator(custom_login_required)
 class ContestSubmissionsForTeamView(ListView):
@@ -193,6 +240,9 @@ class ProblemDetailView(DetailView):
 @class_view_decorator(custom_login_required)
 class ContestListView(ListView):
     template_name = "contests/contest_list.html"
+    # from submission.models import Submission
+    # for each in Submission.objects.all():
+    #     each.delete()
 
     def get_queryset(self):
         if(self.request.user.userType.lower() == "team"):
@@ -211,7 +261,8 @@ class ContestStartView(TemplateView):
             else:
                 messages.success(request, 'Contest Successfully Started')
             Contest.objects.filter(id = id_).update(isRunning = True)
-            currentTime = datetime.datetime.now().time()
+            currentTime = datetime.datetime.now()
+            print("Current and Start Time = ", currentTime)
             Contest.objects.filter(id = id_).update(startTime = currentTime)
         else:
             messages.success(request, 'Contest already running, Cannot start again')
@@ -224,7 +275,7 @@ class ContestPauseView(TemplateView):
         if Contest.objects.get(id = id_).isRunning == True:
 
             print('Time remaining', Contest.objects.get(id = id_).get_remaining_time())
-            Contest.objects.filter(id = id_).update(contestDuration = Contest.objects.get(id = id_).get_remaining_time())
+            Contest.objects.filter(id = id_).update(contestDuration = datetime.timedelta(seconds = Contest.objects.get(id = id_).get_remaining_time()))
 
             Contest.objects.filter(id = id_).update(isRunning = False)
             Contest.objects.filter(id = id_).update(isPaused = True)
@@ -243,7 +294,7 @@ class ContestStopView(TemplateView):
             Contest.objects.filter(id = id_).update(isRunning = False)
             Contest.objects.filter(id = id_).update(isPaused = False)
 
-            currentTime = datetime.datetime.now().time()
+            currentTime = datetime.datetime.now()
             
             Contest.objects.filter(id = id_).update(stopTime = currentTime)
             Contest.objects.filter(id = id_).update(pauseTime = None)

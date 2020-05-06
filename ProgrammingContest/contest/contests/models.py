@@ -17,36 +17,40 @@ class Contest(models.Model):
 
     isRunning               = models.BooleanField(default = False)
     isPaused                = models.BooleanField(default = False)
-    pauseTime               = models.TimeField(null = True)
-    startTime               = models.TimeField(null = True)
-    stopTime                = models.TimeField(null = True)
+    pauseTime               = models.DateTimeField(null = True)
+    startTime               = models.DateTimeField(null = True)
+    stopTime                = models.DateTimeField(null = True)
     #contestProblems         = models.ForeignKey(Problem, default = None, on_delete = models.SET_NULL, null = True)
 
     def get_remaining_time(self):
-        remainingTime = datetime.timedelta(0,0,0)
+        remainingTime = 0
         if not self.isRunning:
             return remainingTime
         else:
-            startTime           = datetime.timedelta(hours = self.startTime.hour, 
-                                                        minutes = self.startTime.minute, 
-                                                        seconds = self.startTime.second)
-            currentTime         = datetime.datetime.now().time()
-            currentTimedelta    = datetime.timedelta(hours = currentTime.hour, 
-                                                        minutes = currentTime.minute, 
-                                                        seconds = currentTime.second)
-            contestDuration     = self.contestDuration
+            
+            startTime           = self.startTime
+            tz_info             = startTime.tzinfo
 
-            remainingTime            = (startTime + contestDuration) - currentTimedelta
-            return remainingTime
+            currentTime         = datetime.datetime.now(tz_info)
+            contestDuration     = self.contestDuration
+            durationSeconds     = contestDuration.seconds
+            print("startTime", self.startTime)
+            print("contest Duration", self.contestDuration)
+            remainingTime            = startTime - currentTime
+
+            time_in_seconds = (remainingTime.total_seconds() + durationSeconds)
+            if time_in_seconds == 0:
+                self.isRunning = False
+            return time_in_seconds 
     
     def get_remaining_time_string(self):
         if not self.isRunning:
             return "Contest Not Running"
         else:
             timeLeft            = self.get_remaining_time()
-            hour                = timeLeft.seconds // 3600
-            minutes             = (timeLeft.seconds // 60) % 60
-            seconds             = timeLeft.seconds - hour * 3600 - minutes * 60
+            hour                = int(timeLeft // 3600)
+            minutes             = int((timeLeft // 60) % 60)
+            seconds             = int(timeLeft - hour * 3600 - minutes * 60)
             
             hour = str(hour) if hour >= 10 else ("0" + str(hour))
             minutes = str(minutes) if minutes >= 10 else ("0" + str(minutes))

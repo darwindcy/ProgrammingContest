@@ -15,7 +15,8 @@ from .views import (
     ContestScoreBoardView,
     ContestProblemCreateView,
     ContestSubmissionsForTeamView,
-    ContestPauseView
+    ContestPauseView,
+    ContestSubmissionDeleteView
 )
 
 from submission.views import SubmissionCreateView
@@ -33,6 +34,7 @@ urlpatterns = [
     path('<int:id>/pause/', ContestPauseView.as_view(), name = 'contest-pause'),
     path('<int:id>/problem/<int:problem_id>/', ProblemDetailView.as_view(), name = 'problem-detail'),
     path('<int:id>/submissions/', ContestSubmissionsListView.as_view(), name = 'contest-submissions'),
+    path('<int:id>/submissions/delete/', ContestSubmissionDeleteView, name = 'contest-submissions-delete'),
     path('<int:id>/problem/<int:problem_id>/submit/', SubmissionCreateView.as_view(), name = 'contest-submission-create'),
     path('<int:id>/scoreboard/', ContestScoreBoardView.as_view(), name = 'contest-scoreboard'),
     path('<int:id>/problems/create/', ContestProblemCreateView.as_view(), name = 'contest-problem-create'),

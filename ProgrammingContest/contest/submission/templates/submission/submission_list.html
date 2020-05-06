@@ -16,6 +16,7 @@
         <td><b>Problem Name</b></td>
         <td><b>Submission Name</b></td>
         <td><b>Download Status</b></td>
+        <td><b>Submission Time</b></td>
         <td><b>Score/Count</b></td>
     </tr>
 {% for instance in object_list %}
@@ -33,6 +34,7 @@
             {% endif %}
 
         </td>
+        <td>{{ instance.submissionTime }}</td>
         <td>
             Count : {{ instance.totalSubmissionCount }}
             Score : {{ instance.get_submission_score }}
