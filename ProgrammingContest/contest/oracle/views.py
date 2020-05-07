@@ -29,8 +29,6 @@ class PostsListView(ListView):
 
 @class_view_decorator(custom_login_required)
 class PostCreateView(CreateView):
-    #model = OraclePost
-    #fields = ['postQuestion', 'postUser']
     template_name = "oracle/new_post.html"
     form_class = OraclePostForm
     queryset = OraclePost.objects.all()

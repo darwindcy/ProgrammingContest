@@ -70,7 +70,6 @@ class Submission(models.Model):
     def get_submission_score(self):
 
         if self.submissionProblem and self.submissionTime:
-            #timediff = submission_timedelta - contest_timedelta
             timediff        = self.submissionTime - self.submissionProblem.contest.startTime
             duration_in_s   = timediff.total_seconds()
 

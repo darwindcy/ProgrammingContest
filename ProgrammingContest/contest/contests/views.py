@@ -38,7 +38,6 @@ class ContestProblemCreateView(CreateView):
     
     def get_success_url(self):
         id_ = self.kwargs.get("id")
-        
         return (Contest.objects.get(id = id_).get_absolute_url())
 
 @class_view_decorator(custom_login_required)
@@ -77,6 +76,7 @@ class ContestScoreBoardView(ListView):
         context['contest']          = current_contest
         score_data = {}
 
+        # Creating a dictionary of dictionary that holds the latest submission for each problem, total sum, total correct submissions 
         for team in teams:
             score_data[team] = {}
             sum = 0
@@ -84,11 +84,8 @@ class ContestScoreBoardView(ListView):
             for problem in problem_list:
                 submissions_of_problem_for_team = submissionList.filter(submissionTeam = team, submissionProblem = problem)
                 if submissions_of_problem_for_team.count() > 0:
-                    #print("sub list", submissions_of_problem_for_team)
-                    #print("sub list", submissions_of_problem_for_team.order_by('-subTouchTime'))
-                    
                     main_submission = submissions_of_problem_for_team.order_by('-subTouchTime').first()
-                    print("Main Submission", main_submission)
+
                     if main_submission.submissionGrade == "pass":
                         correct_submissions += 1
                     score_data[team][problem] = main_submission
@@ -97,10 +94,10 @@ class ContestScoreBoardView(ListView):
             score_data[team]["sum"] = sum
             score_data[team]["correct"] = correct_submissions
         
-        print(score_data)
+        # Storing the dictionary as data to be accessed in the template
         context['score_data'] = score_data
        
-        
+        # sorting the data for scores
         od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["sum"], reverse=False))
         od = OrderedDict(sorted (score_data.items(), key = lambda kv:kv[1]["correct"], reverse=True))
 
@@ -108,6 +105,7 @@ class ContestScoreBoardView(ListView):
 
         remainingTime = current_contest.get_remaining_time()
         
+        # closing the scoreboard if less than 30 minutes remaining
         if (remainingTime // 3600 > 0 or ((remainingTime // 60) % 60) >= 30 or (remainingTime == 0)): 
             scoreboard_active = True
         else:
@@ -138,8 +136,9 @@ class ContestSubmissionsListView(ListView):
 
         return latestSubmissions
 
+# Normal view instead of class based view used
 def ContestSubmissionDeleteView(request, id, *args, **kwargs):
-    if request.method == "POST":
+    if request.method == "POST" and request.user.userType.lower() == "administrator":
         current_contest = Contest.objects.get(id = id)
         problem_list        = current_contest.contestproblems.all()
 
@@ -161,29 +160,6 @@ def ContestSubmissionDeleteView(request, id, *args, **kwargs):
     }
     return render(request, "contests/contest_submissions_delete.html", context)
 
-class ContestSubmissionsDelete(ListView):
-    template_name = 'contests/contest_submissions_delete.html'
-
-    def get_queryset(self):
-        id_ = self.kwargs.get("id")
-        current_contest = Contest.objects.get(id = id_)
-        problem_list        = current_contest.contestproblems.all()
-
-        from submission.models import Submission
-        submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
-        for each in submissionList:
-            each.delete()
-        from django.conf import settings
-        media_root = settings.MEDIA_ROOT
-        path = os.path.join(media_root,"submissions", current_contest.contestName)
-       
-        if os.path.isdir(path):
-            shutil.rmtree(path, ignore_errors=True)
-        return submissionList
-
-    def get_success_url(self):
-        return reverse('contests:contest-list')
-
 @class_view_decorator(custom_login_required)
 class ContestSubmissionsForTeamView(ListView):
     template_name = "contests/contest_submissions_for_team.html"
@@ -197,9 +173,8 @@ class ContestSubmissionsForTeamView(ListView):
 
         submissionList      = Submission.objects.filter(submissionProblem__in = problem_list)
         from users.models import CustomUser
-        print("selected user", CustomUser.objects.get(id = team_id))
+
         teamSubmissionList  = submissionList.filter(submissionTeam = CustomUser.objects.get(id = team_id))
-        print("team submission list", teamSubmissionList)
         return teamSubmissionList
 
 @class_view_decorator(custom_login_required)
@@ -240,9 +215,7 @@ class ProblemDetailView(DetailView):
 @class_view_decorator(custom_login_required)
 class ContestListView(ListView):
     template_name = "contests/contest_list.html"
-    # from submission.models import Submission
-    # for each in Submission.objects.all():
-    #     each.delete()
+
 
     def get_queryset(self):
         if(self.request.user.userType.lower() == "team"):
@@ -318,8 +291,8 @@ class ContestDetailView(DetailView):
 @class_view_decorator(custom_login_required)
 class ContestDeleteView(DeleteView):
     template_name = 'contests/contest_delete.html'
-    #queryset = User.objects.all()
 
+    # delete object, submissions and delete the folder of its submissions
     def get_object(self):
         id_ = self.kwargs.get("id")
         current_contest = Contest.objects.get(id = id_)

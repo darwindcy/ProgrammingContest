@@ -22,7 +22,11 @@
         </a>
         </td>
     <td><a href = '{{instance.get_absolute_url }}update' > update </a></td> 
-    <td><a href = '{{instance.get_absolute_url }}delete' > delete </a></td>
+    {% if request.user.userName != instance.userName %}
+        <td><a href = '{{instance.get_absolute_url }}delete' > delete </a></td>
+    {% else %}
+        <td><a href = "#">Not available</a></td>
+    {% endif %}
 </tr>
 {% endfor %}
 </table>

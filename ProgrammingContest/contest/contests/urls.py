@@ -23,6 +23,7 @@ from submission.views import SubmissionCreateView
 
 app_name = 'contests'
 
+#URLS in the contest/ link
 urlpatterns = [
     path('', ContestListView.as_view(), name = 'contest-list'),
     path('<int:id>/', ContestDetailView.as_view(), name = 'contest-detail'),

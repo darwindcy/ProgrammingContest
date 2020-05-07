@@ -31,7 +31,7 @@ class ContestUpdateForm(forms.ModelForm):
 
     contestHours        = forms.IntegerField(label = "Hours", min_value = 0, required = True)
     contestMinutes      = forms.IntegerField(label = "Minutes", min_value = 0, required = True)
-    #contestQuestions    = forms.ModelChoiceField(queryset = Problem.objects.all(), required = False)
+
     class Meta:
         model = Contest
         fields = [
@@ -55,7 +55,6 @@ class ContestModelForm(forms.ModelForm):
 
 
     def clean(self, *args, **kwargs):
-        #forms.raiseValidationError("Please Enter a Valid Time")
         contestName     = self.cleaned_data.get("contestName")
         qs = Contest.objects.filter(contestName = contestName)
         if qs.exists():
@@ -81,4 +80,3 @@ class ContestModelForm(forms.ModelForm):
             'contestMinutes',
         ]
         labels = {'contestHours: Contest Hours', 'contestMinutes : Contest Minutes', 'contestQuestions : Problems List'}
-        # add validation by def clean_title ... example

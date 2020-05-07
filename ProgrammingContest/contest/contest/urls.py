@@ -25,10 +25,9 @@ from home.views import HomePageView
 
 from django.contrib.auth.decorators import login_required
 
+# Base for all the urls, the app urls are included here
 urlpatterns = [
     path('', HomePageView.as_view()),
-
-    path('scoreboard/', include('scoreboard.urls')),
 
     path('submission/', include('submission.urls')),
 

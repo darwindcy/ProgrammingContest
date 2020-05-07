@@ -20,8 +20,8 @@ class Contest(models.Model):
     pauseTime               = models.DateTimeField(null = True)
     startTime               = models.DateTimeField(null = True)
     stopTime                = models.DateTimeField(null = True)
-    #contestProblems         = models.ForeignKey(Problem, default = None, on_delete = models.SET_NULL, null = True)
 
+    # returns the remaining time
     def get_remaining_time(self):
         remainingTime = 0
         if not self.isRunning:
@@ -34,15 +34,16 @@ class Contest(models.Model):
             currentTime         = datetime.datetime.now(tz_info)
             contestDuration     = self.contestDuration
             durationSeconds     = contestDuration.seconds
-            print("startTime", self.startTime)
-            print("contest Duration", self.contestDuration)
             remainingTime            = startTime - currentTime
 
             time_in_seconds = (remainingTime.total_seconds() + durationSeconds)
-            if time_in_seconds == 0:
+
+            if (time_in_seconds <= 0):
                 self.isRunning = False
+                self.save()
             return time_in_seconds 
     
+    # returns remaining time in formatted string
     def get_remaining_time_string(self):
         if not self.isRunning:
             return "Contest Not Running"

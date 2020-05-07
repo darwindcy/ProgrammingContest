@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'oracle',
     'home',
     'submission',
-    'scoreboard',
 ]
 
 AUTH_USER_MODEL     = 'users.CustomUser'

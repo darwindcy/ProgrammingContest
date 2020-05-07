@@ -4,6 +4,7 @@ from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+#Decorator for views that limit accesses
 def access_required(allowed_users=[]):
     def decorator(func):
         def send(request, *args, **kwargs):
